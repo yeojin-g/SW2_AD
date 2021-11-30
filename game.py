@@ -1,6 +1,10 @@
-from guess import Guess
-from player1 import Player1  # 컴퓨터
-from player2 import Player2  # 사용자
+"""
+메인 클래스가 있는 파일
+"""
+
+from guess import Guess 
+from player1 import Player1  # player1: 컴퓨터
+from player2 import Player2  # player2: 사용자
 import time
 
 
@@ -14,13 +18,13 @@ class gameMain():
     gameRound = 1  # 게임 판 수
 
     while 1:
-        if gameRound % 2 == 1:  # 홀수 판: 플레이어2(사용자)-공격, 플레이어1(컴퓨터)-수비
-            selectedBeads = player1.randomNumberOfBeads()  # 플레이어1(수비자).랜덤으로 구슬 고르기
+        if gameRound % 2 == 1:  # 홀수 판: player2(사용자)-공격, player1(컴퓨터)-수비
+            selectedBeads = player1.randomNumberOfBeads()  # player1(컴퓨터)-수비자.랜덤으로 구슬 고르기
             print(f"<<{gameRound}라운드>> 공격자입니다.")
-            display = player1.messageOutput()
+            display = player1.messageOutput()  # player1이 수비자일 때 출력하는 메시지
             print(display)
             chosenEvenOdd = input()  # 사용자가 고른 홀/짝 String: "홀수" or "짝수"
-            if guess.guess(selectedBeads, chosenEvenOdd):  # True면 = 사용자가 이겼으면
+            if guess.guess(selectedBeads, chosenEvenOdd):  # True일 때 = 사용자가 이겼을 때
                 player1.subBeads(selectedBeads)  # player1 구슬 개수 감소
                 player2.addBeads(selectedBeads)  # player2 구슬 개수 증가
                 display = f"""
@@ -29,19 +33,19 @@ class gameMain():
                           이번 판에서 {selectedBeads}개의 구슬을 얻었습니다.
                           """
                 print(display)
-                print("결과: ")
-                p1Res = player1.currentBeadsDrawing()
-                p2Res = player2.currentBeadsDrawing()
+                # 결과 출력
+                p1Res = player1.currentBeadsDrawing()  # player1이 가지고 있는 구슬
+                p2Res = player2.currentBeadsDrawing()  # player2이 가지고 있는 구슬
                 print(f"player1 남은 공: {player1.getNumOfBeads()}개")
                 print(p1Res)
                 print(f"{name} 남은 공: {player2.getNumOfBeads()}개")
                 print(p2Res)
 
-                if guess.finished(player1.getNumOfBeads()):
+                if guess.finished(player1.getNumOfBeads()):  # player1 가지고 있는 구슬이 없을 경우
                     print("승리입니다")
                     break
                 else:
-                    gameRound += 1
+                    gameRound += 1 
                     continue
 
             else:  # False라면 = 사용자가 졌다면
@@ -77,7 +81,7 @@ class gameMain():
 
 
 
-        else:  # 짝수 판이면 사용자가 수비자
+        else:  # 짝수 판: player1(컴퓨터)-공격, player2(사용자)-공격
             print(f"<<{gameRound}라운드>> 수비자입니다.")
             display = player2.messageOutput()
             print(display)
