@@ -193,6 +193,7 @@ class game(QDialog, QWidget):
 
     def Home(self): # go home 버튼 눌렀을 때 함수
         self.close() #창 닫기
+        self.close() #창 닫기
 
 if __name__ == "__main__" :
     app = QApplication(sys.argv)
