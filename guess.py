@@ -10,7 +10,7 @@ class Guess:
             return False
 
     def finished(self, beads):
-        if beads == 0:
+        if beads <= 0:
             return True
         else:
             return False
