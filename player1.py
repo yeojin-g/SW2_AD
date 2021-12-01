@@ -34,3 +34,7 @@ class Player1(Player):
                홀수/짝수 중 하나를 입력하세요.
                """
         return note
+
+    # player1 결과값 출력하는 메시지
+    def result(self):
+        Player.result('player1')

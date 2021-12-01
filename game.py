@@ -45,12 +45,8 @@ class gameMain():
                               """
                     print(display)
                     # 결과 출력
-                    p1Res = player1.currentBeadsDrawing()  # player1이 가지고 있는 구슬
-                    p2Res = player2.currentBeadsDrawing()  # player2이 가지고 있는 구슬
-                    print(f"player1 남은 공: {player1.getNumOfBeads()}개")
-                    print(p1Res)
-                    print(f"{name} 남은 공: {player2.getNumOfBeads()}개")
-                    print(p2Res)
+                    player1.result()
+                    player2.result()
                     gameRound += 1
                     continue
 
@@ -62,7 +58,7 @@ class gameMain():
                               player1은 {selectedBeads}개의 구슬을 선택했습니다.
                               {chosenEvenOdd}를 선택했으므로 참가번호 {number}번 {name}님의 공격 실패입니다.
                               이번 판에서 {selectedBeads * 2}개의 구슬을 잃었습니다.
-                              남은 공이 없으므로 패배입니다.....ㅠㅠ
+                              남은 구슬이 없으므로 패배입니다.....ㅠㅠ
                               """
                     print(display)
                     break
@@ -75,12 +71,8 @@ class gameMain():
                               """
                     print(display)
                     # 결과 출력
-                    p1Res = player1.currentBeadsDrawing()
-                    p2Res = player2.currentBeadsDrawing()
-                    print(f"player1 남은 공: {player1.getNumOfBeads()}개")
-                    print(p1Res)
-                    print(f"{name} 남은 공: {player2.getNumOfBeads()}개")
-                    print(p2Res)
+                    player1.result()
+                    player2.result()
                     gameRound += 1
                     continue
 
@@ -114,12 +106,8 @@ class gameMain():
                               """
                     print(display)
                     # 결과 출력
-                    p1Res = player1.currentBeadsDrawing()
-                    p2Res = player2.currentBeadsDrawing()
-                    print(f"player1 남은 공: {player1.getNumOfBeads()}개")
-                    print(p1Res)
-                    print(f"{name} 남은 공: {player2.getNumOfBeads()}개")
-                    print(p2Res)
+                    player1.result()
+                    player2.result()
                     gameRound += 1
                     continue
 
@@ -131,7 +119,7 @@ class gameMain():
                               당신은 {selectedBeads}개의 구슬을 선택했습니다.
                               player1은 {chosenEvenOdd}를 선택했으므로 참가번호 {number}번 {name}님의 수비 실패입니다.
                               이번 판에서 {selectedBeads}개의 구슬을 잃었습니다.
-                              남은 공이 없으므로 패배입니다.....ㅠㅠ
+                              남은 구슬이 없으므로 패배입니다.....ㅠㅠ
                               """
                     print(display)
                     break
@@ -143,12 +131,8 @@ class gameMain():
                               """
                     print(display)
                     # 결과 출력
-                    p1Res = player1.currentBeadsDrawing()
-                    p2Res = player2.currentBeadsDrawing()
-                    print(f"player1 남은 공: {player1.getNumOfBeads()}개")
-                    print(p1Res)
-                    print(f"{name} 남은 공: {player2.getNumOfBeads()}개")
-                    print(p2Res)
+                    player1.result()
+                    player2.result()
                     gameRound += 1
                     continue
 

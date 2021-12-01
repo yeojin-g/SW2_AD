@@ -15,3 +15,7 @@ class Player2(Player):
                이번 게임에 걸 구슬의 개수를 입력하세요.
                """
         return note
+
+    # player2 결과값 출력하는 메시지
+    def result(self):
+        Player.result('player2')
