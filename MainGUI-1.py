@@ -6,16 +6,16 @@ import time
 from PyQt5.QtWidgets import *
 
 
-class SqGame(QWidget):
-    def __init__(self): #생성자
+class Main():  # 두 개의 창이 공유하는 변수를 저장하는 상위클래스
+    name = ''
+    playerNum = ''
+    BeadNum = 0
+
+
+class SqGame(QWidget, Main):
+    def __init__(self):  # 생성자
         super().__init__()
         self.initUI()
-        self.name = ''
-        self.playerNum = ''
-        self.BeadNum = 0
-        self.player1 = ''
-        self.player2 = ''
-        self.gameRound = 0
 
     def initUI(self):
         #문자열
@@ -113,16 +113,17 @@ class SqGame(QWidget):
         self.name = self.nameEdit.text()
         self.playerNum = self.ptcNumberEdit.text()
         self.BeadNum = int(self.pickBeadNumEdit.text())
-        self.player1 = Player1(self.BeadNum)  # player1 정보 저장
-        self.player2 = Player2(self.BeadNum, self.name, self.playerNum)  # player2 정보 저장
-        self.guess = Guess()
-        self.gameRound = 1  # 게임 판 수
 
-class SecGame(QDialog, QWidget): #게임창, 2번째 창
+
+class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
+
     def __init__(self): #생성자
-        super(SecGame, self).__init__()
+        super().__init__()
+        self.player1 = Player1(self.BeadNum)
+        self.player2 = Player2(self.BeadNum, self.name, self.playerNum)
+        self.guess = Guess()
+        self.gameRound = 1
         self.initUI()
-
 
     def initUI(self):
        # 문자열
@@ -130,7 +131,6 @@ class SecGame(QDialog, QWidget): #게임창, 2번째 창
         remainBead2 = QLabel('player2 남은 구슬 수: ')
         choiceNum = QLabel('손에 쥘 구슬 수: ')
         round_ = QLabel('라운드')
-
 
        # 입출력창
         self.resultEdit = QTextEdit()
@@ -226,13 +226,20 @@ class SecGame(QDialog, QWidget): #게임창, 2번째 창
         if self.oddNumButton.isChecked():
             return "홀수"
 
-    def startBeadGame(self): # <-- 내가 차근차근 구현하려던 그 시작 부분 물론 여기부터 안돼
-        self.remainBead1Edit.setText(SqGame.player2.callResult())
+    def startBeadGame(self):  # <-- 내가 차근차근 구현하려던 그 시작 부분 물론 여기부터 안돼
+        #self.round_Edit.setText("wow")
+        self.round_Edit.setText(str(self.gameRound))
+        self.remainBead1Edit.setText(self.player1.callResult())
+        self.remainBead2Edit.setText(self.player2.callResult())
+        # self.remainBead1Edit.setText(str(self.player1.getNumOfBeads()))  # 테스트해봄..
+        # self.remainBead1Edit.setText(SqGame.player2.callResult())
+        # self.mainBeadGame()
         # self.remainBead2Edit.setText(SqGame.player2.callResult())
         # self.round_Edit.setText(SqGame.gameRound)
 
     def mainBeadGame(self):
         while 1:
+
             if SqGame.gameRound % 2 == 1:  # 홀수 판: player2(사용자)-공격, player1(컴퓨터)-수비
                 selectedBeads = SqGame.player1.randomNumberOfBeads()  # player1(컴퓨터)-수비자.랜덤으로 구슬 고르기
                 self.resultEdit.setText(f"<<{SqGame.gameRound}라운드>> 공격자입니다.")
@@ -261,7 +268,7 @@ class SecGame(QDialog, QWidget): #게임창, 2번째 창
                         # 결과 출력
                         self.remainBead1Edit.setText(SqGame.player1.result())
                         self.remainBead1Edit.setText(SqGame.player2.result())
-                        SqGame.gameRound += 1
+                        self.gameRound += 1
                         self.round_Edit.setText(SqGame.gameRound)
                         continue
 
@@ -286,9 +293,9 @@ class SecGame(QDialog, QWidget): #게임창, 2번째 창
                                   """
                         self.resultEdit.setText(display)
                         # 결과 출력
-                        self.remainBead1Edit.setText(SqGame.player1.result())
+                        self.remainBead1Edit.setText(self.player1.callResult())
                         self.remainBead1Edit.setText(SqGame.player2.result())
-                        SqGame.gameRound += 1
+                        self.gameRound += 1
                         self.round_Edit.setText(SqGame.gameRound)
                         continue
 
@@ -353,6 +360,7 @@ class SecGame(QDialog, QWidget): #게임창, 2번째 창
                         SqGame.gameRound += 1
                         self.round_Edit.setText(SqGame.gameRound)
                         continue
+
 
 if __name__ == "__main__" :
     app = QApplication(sys.argv)
