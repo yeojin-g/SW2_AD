@@ -94,7 +94,7 @@ class SqGame(QWidget, Main):
         vbox.addStretch(1)
 
         #버튼 연결
-        self.nextButton.clicked.connect(self.settingInfo)
+        #self.nextButton.clicked.connect(self.settingInfo)
         self.nextButton.clicked.connect(self.next_clicked)
 
         #윈도우 위치 및 타이틀, 메인 레이아웃 설정
@@ -109,10 +109,10 @@ class SqGame(QWidget, Main):
         self.second.exec() #두번째 창 닫을 때까지 기다림
         self.show() # 두번째 창 닫으면 첫 번째 창 보여짐
 
-    def settingInfo(self):
+    """def settingInfo(self):
         self.name = self.nameEdit.text()
         self.playerNum = self.ptcNumberEdit.text()
-        self.BeadNum = int(self.pickBeadNumEdit.text())
+        self.BeadNum = int(self.pickBeadNumEdit.text())"""
 
 
 class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
@@ -133,9 +133,8 @@ class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
         round_ = QLabel('라운드')
 
        # 입출력창
-        self.resultEdit = QTextEdit()
-        self.remainBead1Edit = QLineEdit()
-        self.remainBead2Edit = QLineEdit()
+        self.remainBead1Edit = QTextEdit()
+        self.remainBead2Edit = QTextEdit()
         self.choiceNumEdit = QLineEdit()
         self.messageEdit = QTextEdit()
         self.round_Edit = QLineEdit()
@@ -148,71 +147,76 @@ class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
         self.startButton = QPushButton('Game Start')
 
         # 라운드 알림 배치
-        hbox = QHBoxLayout()
-        hbox.addStretch(1)
-        hbox.addWidget(self.round_Edit)
-        hbox.addWidget(round_)
-        hbox.addStretch(1)
+        hboxR = QHBoxLayout()
+        hboxR.addStretch(1)
+        hboxR.addWidget(self.round_Edit)
+        hboxR.addWidget(round_)
+        hboxR.addStretch(1)
 
         # 홀짝 + 엔터 버튼 배치
-        hbox1 = QHBoxLayout()
-        hbox1.addStretch(1)
-        hbox1.addWidget(self.oddNumButton)
-        hbox1.addStretch(1)
-        hbox1.addWidget(self.evenNumButton)
-        hbox1.addStretch(1)
-        hbox1.addWidget(self.enterEventButton)
-        hbox1.addStretch(1)
+        hboxB = QHBoxLayout()
+        hboxB.addStretch(1)
+        hboxB.addWidget(self.oddNumButton)
+        hboxB.addStretch(1)
+        hboxB.addWidget(self.evenNumButton)
+        hboxB.addStretch(1)
+        hboxB.addWidget(self.enterEventButton)
+        hboxB.addStretch(1)
 
-        #세로 1열 배치 - 결과창 + 메세지창
+        #세로 1열 - 메세지 창 + player1 남은 구슬 창
         vbox1 = QVBoxLayout()
-        vbox1.addStretch(1)
-        vbox1.addWidget(self.resultEdit)
         vbox1.addStretch(1)
         vbox1.addWidget(self.messageEdit)
         vbox1.addStretch(1)
+        vbox1.addWidget(remainBead1)
+        vbox1.addStretch(1)
+        vbox1.addWidget(self.remainBead1Edit)
+        vbox1.addStretch(1)
 
-        #세로 2열 배치(1) - 남은 구슬, 손에 쥘 구슬
+        # 세로 2열 - 시작 버튼, 구슬 수, 홀짝 및 엔터버튼, player2 남은 구슬 출력 창
         vbox2 = QVBoxLayout()
         vbox2.addStretch(1)
-        vbox2.addLayout(hbox)
-        vbox2.addStretch(1)
-        vbox2.addWidget(remainBead1)
-        vbox2.addStretch(1)
-        vbox2.addWidget(self.remainBead1Edit)
-        vbox2.addStretch(1)
-        vbox2.addWidget(remainBead2)
-        vbox2.addStretch(1)
-        vbox2.addWidget(self.remainBead2Edit)
+        vbox2.addWidget(self.startButton)
         vbox2.addStretch(1)
         vbox2.addWidget(choiceNum)
         vbox2.addStretch(1)
         vbox2.addWidget(self.choiceNumEdit)
         vbox2.addStretch(1)
-        vbox2.addLayout(hbox1)
-        vbox2.addStretch(3)
-        vbox2.addWidget(self.startButton)
+        vbox2.addLayout(hboxB)
         vbox2.addStretch(1)
-        vbox2.addWidget(self.homeButton)
+        vbox2.addWidget(remainBead2)
+        vbox2.addStretch(1)
+        vbox2.addWidget(self.remainBead2Edit)
+        vbox2.addStretch(1)
 
-        #세로열 병합
-        hbox2 = QHBoxLayout()
-        hbox2.addStretch(1)
-        hbox2.addLayout(vbox1)
-        hbox2.addStretch(1)
-        hbox2.addLayout(vbox2)
-        hbox2.addStretch(1)
+        # 세로열 병합
+        hbox1 = QHBoxLayout()
+        hbox1.addStretch(1)
+        hbox1.addLayout(vbox1)
+        hbox1.addStretch(1)
+        hbox1.addLayout(vbox2)
+        hbox1.addStretch(1)
+
+        # 최종 병합
+        vboxF = QVBoxLayout()
+        vboxF.addStretch(1)
+        vboxF.addLayout(hboxR)
+        vboxF.addStretch(1)
+        vboxF.addLayout(hbox1)
+        vboxF.addStretch(1)
+        vboxF.addWidget(self.homeButton)
+        vboxF.addStretch(1)
 
         # 버튼 연결
         self.homeButton.clicked.connect(self.Home)
         self.startButton.clicked.connect(self.startBeadGame)
-        #self.evenNumButton.clicked.connect(self.buttonClicked())
-        #self.oddNumButton.clicked.connect(self.buttonClicked())
+        self.evenNumButton.clicked.connect(self.buttonClicked)
+        self.oddNumButton.clicked.connect(self.buttonClicked)
 
 
         # 레이아웃, 사이즈, 윈도우 이름 설정
-        self.setLayout(hbox2)
-        self.setGeometry(700, 350, 700, 450)
+        self.setLayout(vboxF)
+        self.setGeometry(700, 350, 700, 350)
         self.setWindowTitle('구슬 게임')
         self.show()
 
