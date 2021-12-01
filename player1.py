@@ -35,6 +35,6 @@ class Player1(Player):
                """
         return note
 
-    # player1 결과값 출력하는 메시지
-    def result(self):
-        Player.result('player1')
+    # result 함수를 부르는 함수
+    def callResult(self):
+        return self.result('player1')

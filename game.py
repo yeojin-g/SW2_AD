@@ -45,8 +45,9 @@ class gameMain():
                               """
                     print(display)
                     # 결과 출력
-                    player1.result()
-                    player2.result()
+                    print(player1.callResult())
+                    print(player2.callResult())
+
                     gameRound += 1
                     continue
 
@@ -71,8 +72,8 @@ class gameMain():
                               """
                     print(display)
                     # 결과 출력
-                    player1.result()
-                    player2.result()
+                    print(player1.callResult())
+                    print(player2.callResult())
                     gameRound += 1
                     continue
 
@@ -106,8 +107,8 @@ class gameMain():
                               """
                     print(display)
                     # 결과 출력
-                    player1.result()
-                    player2.result()
+                    print(player1.callResult())
+                    print(player2.callResult())
                     gameRound += 1
                     continue
 
@@ -131,8 +132,8 @@ class gameMain():
                               """
                     print(display)
                     # 결과 출력
-                    player1.result()
-                    player2.result()
+                    print(player1.callResult())
+                    print(player2.callResult())
                     gameRound += 1
                     continue
 
