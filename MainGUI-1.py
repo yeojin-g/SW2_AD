@@ -5,16 +5,17 @@ from player2 import Player2  # player2: 사용자
 import time
 from PyQt5.QtWidgets import *
 
-
-class Main():  # 두 개의 창이 공유하는 변수를 저장하는 상위클래스
+# 두 개의 창이 공유하는 변수를 저장하는 상위클래스
+class Main:
     name = ''
     playerNum = ''
-    BeadNum = 0
+    beadNum = 0
 
 
 class SqGame(QWidget, Main):
     def __init__(self):  # 생성자
         super().__init__()
+        self.mainVariables = Main()
         self.initUI()
 
     def initUI(self):
@@ -94,7 +95,7 @@ class SqGame(QWidget, Main):
         vbox.addStretch(1)
 
         #버튼 연결
-        #self.nextButton.clicked.connect(self.settingInfo)
+        self.nextButton.clicked.connect(self.settingInfo)
         self.nextButton.clicked.connect(self.next_clicked)
 
         #윈도우 위치 및 타이틀, 메인 레이아웃 설정
@@ -104,26 +105,27 @@ class SqGame(QWidget, Main):
         self.show()
 
     def next_clicked(self):
-        self.hide() # 메인 윈도우 숨김
+        self.hide()  # 메인 윈도우 숨김
         self.second = SecGame()
         self.second.exec() #두번째 창 닫을 때까지 기다림
-        self.show() # 두번째 창 닫으면 첫 번째 창 보여짐
+        self.show()  # 두번째 창 닫으면 첫 번째 창 보여짐
 
-    """def settingInfo(self):
-        self.name = self.nameEdit.text()
-        self.playerNum = self.ptcNumberEdit.text()
-        self.BeadNum = int(self.pickBeadNumEdit.text())"""
+    def settingInfo(self):
+        Main.name = self.nameEdit.text()
+        Main.playerNum = self.ptcNumberEdit.text()
+        Main.beadNum = int(self.pickBeadNumEdit.text())
 
 
 class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
 
     def __init__(self): #생성자
         super().__init__()
-        self.player1 = Player1(self.BeadNum)
-        self.player2 = Player2(self.BeadNum, self.name, self.playerNum)
+        self.player1 = Player1(Main.beadNum)
+        self.player2 = Player2(Main.beadNum, Main.name, Main.playerNum)
         self.guess = Guess()
         self.gameRound = 1
         self.initUI()
+        self.showInfo()  # 라운드, 구슬의 개수 정보를 보여줌
 
     def initUI(self):
        # 문자열
@@ -132,12 +134,16 @@ class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
         choiceNum = QLabel('손에 쥘 구슬 수: ')
         round_ = QLabel('라운드')
 
-       # 입출력창
-        self.remainBead1Edit = QTextEdit()
-        self.remainBead2Edit = QTextEdit()
-        self.choiceNumEdit = QLineEdit()
-        self.messageEdit = QTextEdit()
+       # 입출력창(read only 설정)
         self.round_Edit = QLineEdit()
+        self.round_Edit.setReadOnly(True)
+        self.messageEdit = QTextEdit()
+        self.messageEdit.setReadOnly(True)
+        self.choiceNumEdit = QLineEdit()
+        self.remainBead1Edit = QTextEdit()
+        self.remainBead1Edit.setReadOnly(True)
+        self.remainBead2Edit = QTextEdit()
+        self.remainBead2Edit.setReadOnly(True)
 
         # 버튼
         self.homeButton = QPushButton('Back')
@@ -230,20 +236,19 @@ class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
         if self.oddNumButton.isChecked():
             return "홀수"
 
-    def startBeadGame(self):  # <-- 내가 차근차근 구현하려던 그 시작 부분 물론 여기부터 안돼
-        #self.round_Edit.setText("wow")
+    # 라운드, 현재 가지고 있는 구슬을 보여주는 함수
+    def showInfo(self):
         self.round_Edit.setText(str(self.gameRound))
         self.remainBead1Edit.setText(self.player1.callResult())
         self.remainBead2Edit.setText(self.player2.callResult())
-        # self.remainBead1Edit.setText(str(self.player1.getNumOfBeads()))  # 테스트해봄..
-        # self.remainBead1Edit.setText(SqGame.player2.callResult())
-        # self.mainBeadGame()
-        # self.remainBead2Edit.setText(SqGame.player2.callResult())
-        # self.round_Edit.setText(SqGame.gameRound)
+
+    def startBeadGame(self):  # <-- 내가 차근차근 구현하려던 그 시작 부분 물론 여기부터 안돼
+        self.round_Edit.setText(str(self.gameRound))
+        self.remainBead1Edit.setText(self.player1.callResult())
+        self.remainBead2Edit.setText(self.player2.callResult())
 
     def mainBeadGame(self):
         while 1:
-
             if SqGame.gameRound % 2 == 1:  # 홀수 판: player2(사용자)-공격, player1(컴퓨터)-수비
                 selectedBeads = SqGame.player1.randomNumberOfBeads()  # player1(컴퓨터)-수비자.랜덤으로 구슬 고르기
                 self.resultEdit.setText(f"<<{SqGame.gameRound}라운드>> 공격자입니다.")
