@@ -100,7 +100,8 @@ class SqGame(QWidget, Main):
 
         #윈도우 위치 및 타이틀, 메인 레이아웃 설정
         self.setLayout(vbox)
-        self.setGeometry(600, 350, 500, 250)
+        self.move(570, 220)
+        self.setFixedSize(800, 550)
         self.setWindowTitle('구슬 게임')
         self.show()
 
@@ -146,7 +147,7 @@ class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
         self.remainBead2Edit.setReadOnly(True)
 
         # 버튼
-        self.homeButton = QPushButton('Back')
+        self.backButton = QPushButton('Back')
         self.oddNumButton = QPushButton('홀')
         self.evenNumButton = QPushButton('짝')
         self.enterEventButton = QPushButton('Enter')
@@ -169,64 +170,50 @@ class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
         hboxB.addWidget(self.enterEventButton)
         hboxB.addStretch(1)
 
-        #세로 1열 - 메세지 창 + player1 남은 구슬 창
-        vbox1 = QVBoxLayout()
-        vbox1.addStretch(1)
-        vbox1.addWidget(self.messageEdit)
-        vbox1.addStretch(1)
-        vbox1.addWidget(remainBead1)
-        vbox1.addStretch(1)
-        vbox1.addWidget(self.remainBead1Edit)
-        vbox1.addStretch(1)
+        #1-2열 - 시작 버튼, 구슬 수, 홀짝 및 엔터버튼
+        grid1_2 = QGridLayout()
+        grid1_2.setSpacing(15)
+        grid1_2.addWidget(self.startButton, 0, 0, 1, 2)
+        grid1_2.addWidget(choiceNum, 1, 0, 1, 2)
+        grid1_2.addWidget(self.choiceNumEdit, 2, 0, 1, 2)
+        grid1_2.addLayout(hboxB, 3, 0, 2, 2)
 
-        # 세로 2열 - 시작 버튼, 구슬 수, 홀짝 및 엔터버튼, player2 남은 구슬 출력 창
-        vbox2 = QVBoxLayout()
-        vbox2.addStretch(1)
-        vbox2.addWidget(self.startButton)
-        vbox2.addStretch(1)
-        vbox2.addWidget(choiceNum)
-        vbox2.addStretch(1)
-        vbox2.addWidget(self.choiceNumEdit)
-        vbox2.addStretch(1)
-        vbox2.addLayout(hboxB)
-        vbox2.addStretch(1)
-        vbox2.addWidget(remainBead2)
-        vbox2.addStretch(1)
-        vbox2.addWidget(self.remainBead2Edit)
-        vbox2.addStretch(1)
+        # 2-1열 - player1 남은 구슬 출력 창
+        grid2_1 = QGridLayout()
+        grid2_1.setSpacing(15)
+        grid2_1.addWidget(remainBead1, 0, 0)
+        grid2_1.addWidget(self.remainBead1Edit, 1, 0, 4, 1)
 
-        # 세로열 병합
-        hbox1 = QHBoxLayout()
-        hbox1.addStretch(1)
-        hbox1.addLayout(vbox1)
-        hbox1.addStretch(1)
-        hbox1.addLayout(vbox2)
-        hbox1.addStretch(1)
+        # 2-2열 - player2 남은 구슬 출력 창
+        grid2_2 = QGridLayout()
+        grid2_2.setSpacing(15)
+        grid2_2.addWidget(remainBead2, 0, 0)
+        grid2_2.addWidget(self.remainBead2Edit, 1, 0, 4, 1)
 
-        # 최종 병합
-        vboxF = QVBoxLayout()
-        vboxF.addStretch(1)
-        vboxF.addLayout(hboxR)
-        vboxF.addStretch(1)
-        vboxF.addLayout(hbox1)
-        vboxF.addStretch(1)
-        vboxF.addWidget(self.homeButton)
-        vboxF.addStretch(1)
+        # Grid 병합
+        grid = QGridLayout()
+        grid.setSpacing(15)
+        grid.addLayout(hboxR, 0, 0, 1, 2)
+        grid.addWidget(self.messageEdit, 1, 0, 5, 1)
+        grid.addLayout(grid1_2, 1, 1, 5, 1)
+        grid.addLayout(grid2_1, 7, 0)
+        grid.addLayout(grid2_2, 7, 1)
+        grid.addWidget(self.backButton, 10, 0, 1, 2)
 
         # 버튼 연결
-        self.homeButton.clicked.connect(self.Home)
+        self.backButton.clicked.connect(self.Back)
         self.startButton.clicked.connect(self.startBeadGame)
         self.evenNumButton.clicked.connect(self.buttonClicked)
         self.oddNumButton.clicked.connect(self.buttonClicked)
 
-
         # 레이아웃, 사이즈, 윈도우 이름 설정
-        self.setLayout(vboxF)
-        self.setGeometry(700, 350, 700, 350)
+        self.setLayout(grid)
+        self.move(600, 200)
+        self.setFixedSize(700, 600)
         self.setWindowTitle('구슬 게임')
         self.show()
 
-    def Home(self): # go home 버튼 눌렀을 때 함수
+    def Back(self): # Back 버튼 눌렀을 때 함수
         self.close() #창 닫기
         self.close() #창 닫기
 
