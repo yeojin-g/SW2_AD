@@ -6,6 +6,7 @@ import time
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
 
+
 # 두 개의 창이 공유하는 변수를 저장하는 상위클래스
 class Main:
     name = ''
@@ -20,7 +21,7 @@ class SqGame(QWidget, Main):
         self.initUI()
 
     def initUI(self):
-        #문자열
+        # 문자열
         title = QLabel("구슬 게임")
         name = QLabel("이름:")
         ptcNumber = QLabel("참가번호:")
@@ -36,12 +37,12 @@ class SqGame(QWidget, Main):
                            진행요원들이 여러분을 항시 감시하고 있으니 반칙은 삼가해주시기 바랍니다.\n
                            그럼 행운을 빕니다.""")
 
-        #입출력창
+        # 입출력창
         self.nameEdit = QLineEdit()
         self.ptcNumberEdit = QLineEdit()
         self.pickBeadNumEdit = QLineEdit()
 
-        #버튼
+        # 버튼
         self.nextButton = QPushButton('Next Page!')
 
         # 가로 1열 - 타이틀
@@ -50,7 +51,7 @@ class SqGame(QWidget, Main):
         hbox1.addWidget(title)
         hbox1.addStretch(1)
 
-        #가로 2열 - 이름, 참가번호
+        # 가로 2열 - 이름, 참가번호
         hbox2 = QHBoxLayout()
         hbox2.addStretch(1)
         hbox2.addWidget(name)
@@ -60,26 +61,26 @@ class SqGame(QWidget, Main):
         hbox2.addWidget(self.ptcNumberEdit)
         hbox2.addStretch(1)
 
-        #가로 3열 - 구슬 개수
+        # 가로 3열 - 구슬 개수
         hbox3 = QHBoxLayout()
         hbox3.addStretch(1)
         hbox3.addWidget(self.pickBeadNumEdit)
         hbox3.addWidget(pickBeadNum)
         hbox3.addStretch(1)
 
-        #가로 4열 - 게임룰 타이틀
+        # 가로 4열 - 게임룰 타이틀
         hbox4 = QHBoxLayout()
         hbox4.addStretch(1)
         hbox4.addWidget(gameRuleTitle)
         hbox4.addStretch(1)
 
-        #가로 5열 - 게임 설명문
+        # 가로 5열 - 게임 설명문
         hbox5 = QHBoxLayout()
         hbox5.addStretch(1)
         hbox5.addWidget(gameRule)
         hbox5.addStretch(1)
 
-        #세로
+        # 세로
         vbox = QVBoxLayout()
         vbox.addStretch(1)
         vbox.addLayout(hbox1)
@@ -95,11 +96,11 @@ class SqGame(QWidget, Main):
         vbox.addWidget(self.nextButton)
         vbox.addStretch(1)
 
-        #버튼 연결
+        # 버튼 연결
         self.nextButton.clicked.connect(self.settingInfo)
         self.nextButton.clicked.connect(self.next_clicked)
 
-        #윈도우 위치 및 타이틀, 메인 레이아웃 설정
+        # 윈도우 위치 및 타이틀, 메인 레이아웃 설정
         self.setLayout(vbox)
         self.move(570, 220)
         self.setFixedSize(800, 550)
@@ -109,7 +110,7 @@ class SqGame(QWidget, Main):
     def next_clicked(self):
         self.hide()  # 메인 윈도우 숨김
         self.second = SecGame()
-        self.second.exec() #두번째 창 닫을 때까지 기다림
+        self.second.exec()  # 두번째 창 닫을 때까지 기다림
         self.show()  # 두번째 창 닫으면 첫 번째 창 보여짐
 
     def settingInfo(self):
@@ -118,25 +119,26 @@ class SqGame(QWidget, Main):
         Main.beadNum = int(self.pickBeadNumEdit.text())
 
 
-class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
+class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
 
-    def __init__(self): #생성자
+    def __init__(self):  # 생성자
         super().__init__()
         self.player1 = Player1(Main.beadNum)
         self.player2 = Player2(Main.beadNum, Main.name, Main.playerNum)
         self.guess_Ob = Guess()
-        self.gameRound = 2
+        self.gameRound = 1
         self.initUI()
-        self.showInfo()  # 라운드, 구슬의 개수 정보를 보여줌
+        self.showInfo()  # 구슬의 개수 정보를 보여줌
+        self.oddOrEven = ''  # 사용자가 공격하는 경우, 즉 홀수판의 경우 사용자가 홀/짝 중 고른 것을 저장하는 변수
 
     def initUI(self):
-       # 문자열
+        # 문자열
         remainBead1 = QLabel('player1 남은 구슬 수: ')
         remainBead2 = QLabel('player2 남은 구슬 수: ')
         choiceNum = QLabel('손에 쥘 구슬 수: ')
         round_ = QLabel('라운드')
 
-       # 입출력창(read only 설정)
+        # 입출력창(read only 설정)
         self.round_Edit = QLineEdit()
         self.round_Edit.setReadOnly(True)
         self.messageEdit = QTextEdit()
@@ -171,7 +173,7 @@ class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
         hboxB.addWidget(self.enterEventButton)
         hboxB.addStretch(1)
 
-        #1-2열 - 시작 버튼, 구슬 수, 홀짝 및 엔터버튼
+        # 1-2열 - 시작 버튼, 구슬 수, 홀짝 및 엔터버튼
         grid1_2 = QGridLayout()
         grid1_2.setSpacing(15)
         grid1_2.addWidget(self.startButton, 0, 0, 1, 2)
@@ -204,9 +206,9 @@ class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
         # 버튼 연결
         self.backButton.clicked.connect(self.Back)
         self.startButton.clicked.connect(self.startBeadGame)
-        self.evenNumButton.clicked.connect(self.keyPressEvent)
-        self.oddNumButton.clicked.connect(self.keyPressEvent)
-        self.enterEventButton.clicked.connect(self.guessWhenRoundEven)
+        self.oddNumButton.clicked.connect(self.oddNumButtonClicked)
+        self.evenNumButton.clicked.connect(self.evenNumButtonClicked)
+        self.enterEventButton.clicked.connect(self.enterEventButtonClicked)
 
         # 레이아웃, 사이즈, 윈도우 이름 설정
         self.setLayout(grid)
@@ -215,14 +217,26 @@ class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
         self.setWindowTitle('구슬 게임')
         self.show()
 
-    def Back(self): # Back 버튼 눌렀을 때 함수
-        self.close() #창 닫기
-        self.close() #창 닫기
+        # 게임 시작버튼을 누르라는 메시지 출력
+        self.messageEdit.setText("게임 시작을 원하시면 Game Start 버튼을 눌러주세요.")
 
-    def buttonsClicked(self): #홀짝 버튼 눌렀을 때 각각 "홀수", "짝수" 리턴하는 함수
-        pass # 결과값얻어서 guess함수로 연결
+    def Back(self):  # Back 버튼 눌렀을 때 함수
+        self.close()  # 창 닫기
+        self.close()  # 창 닫기
 
-    def guessWhenRoundOdd(self, answer):
+    def oddNumButtonClicked(self):
+        self.oddOrEven = "홀수"
+
+    def evenNumButtonClicked(self):
+        self.oddOrEven = "짝수"
+
+    def enterEventButtonClicked(self):  # gameRound의 홀/짝에 따라 다른 함수 실행하게 함
+        if self.gameRound % 2 == 1:  # 홀수판이면
+            self.guessWhenRoundOdd(self.oddOrEven)
+        else:
+            self.guessWhenRoundEven()
+
+    def guessWhenRoundOdd(self, answer):  # 홀수판 / player1(컴퓨터): 수비자, player2(사용자): 공격자
         selectedBeads = self.player1.randomNumberOfBeads()  # player1(컴퓨터)-수비자.랜덤으로 구슬 고르기
         if self.guess_Ob.guess(selectedBeads, answer):  # True일 때 = 사용자가 이겼을 때
             self.player1.subBeads(selectedBeads)  # player1 구슬 개수 감소
@@ -232,41 +246,43 @@ class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
                 display = f"""player1은 {selectedBeads}개의 구슬을 선택했습니다.\n{answer}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 공격 성공입니다.\n이번 판에서 {selectedBeads}개의 구슬을 얻었습니다.\n플레이어1에게서 모든 구슬을 따냈으므로 승리입니다~~~!
                           """
                 self.messageEdit.setText(display)
+                self.showInfo()
+
             else:  # 계속 게임 진행
                 display = f"""player1은 {selectedBeads}개의 구슬을 선택했습니다.\n{answer}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 공격 성공입니다.\n이번 판에서 {selectedBeads}개의 구슬을 얻었습니다.
                           """
                 self.messageEdit.setText(display)
                 # 결과 출력
-                self.remainBead1Edit.setText(self.player1.callResult())
-                self.remainBead1Edit.setText(self.player2.callResult())
+                self.showInfo()
                 self.gameRound += 1
-                self.round_Edit.setText(str(self.gameRound))
 
+                self.messageEdit.append("\n다음 라운드로 진행을 원하시면 Game Start 버튼을 눌러주세요.")
 
         else:  # False = 사용자가 졌다면
             self.player1.addBeads(selectedBeads * 2)  # player1 구슬 개수 감소
             self.player2.subBeads(selectedBeads * 2)  # player2 구슬 개수 증가
             if self.guess_Ob.finished(
                     self.player2.getNumOfBeads()):  # player2가 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 패배)
-                display = f"""player1은 {selectedBeads}개의 구슬을 선택했습니다.\n{answer}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 공격 실패입니다.\n                          이번 판에서 {selectedBeads * 2}개의 구슬을 잃었습니다.\n남은 구슬이 없으므로 패배입니다.....ㅠㅠ
+                display = f"""player1은 {selectedBeads}개의 구슬을 선택했습니다.\n{answer}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 공격 실패입니다.\n이번 판에서 {selectedBeads * 2}개의 구슬을 잃었습니다.\n남은 구슬이 없으므로 패배입니다.....ㅠㅠ
                           """
                 self.messageEdit.setText(display)
+                self.showInfo()
 
             else:  # 계속 게임 진행
                 display = f"""player1은 {selectedBeads}개의 구슬을 선택했습니다.\n{answer}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 공격 실패입니다.\n이번 판에서 {selectedBeads * 2}개의 구슬을 잃었습니다.
                           """
                 self.messageEdit.setText(display)
                 # 결과 출력
-                self.remainBead1Edit.setText(self.player1.callResult())
-                self.remainBead1Edit.setText(self.player2.callResult())
+                self.showInfo()
                 self.gameRound += 1
-                self.round_Edit.setText(str(self.gameRound))
+                # self.round_Edit.setText(str(self.gameRound))
+                self.messageEdit.append("\n다음 라운드로 진행을 원하시면 Game Start 버튼을 눌러주세요.")
 
-
-    def guessWhenRoundEven(self, answer):
+    def guessWhenRoundEven(self):  # 짝수판 / player1(컴퓨터): 공격자, player2(사용자): 수비자
         selectedBeads = int(self.choiceNumEdit.text())  # 사용자가 건 구슬 수
         chosenEvenOdd = self.player1.randomChooseOddEven()  # player1(컴퓨터)-수비자. 홀수, 짝수 둘 중 하나 랜덤으로 고르기
-        self.messageEdit.append("\nplayer1이 짝수/홀수를 고르는 중입니다. 잠시만 기다려주세요.")
+        display = "player1이 짝수/홀수를 고르는 중입니다. 잠시만 기다려주세요..."
+        self.messageEdit.setText(display)
         time.sleep(2)  # 2초 기다림
 
         if not self.guess_Ob.guess(selectedBeads, chosenEvenOdd):  # 사용자가 이겼을 때
@@ -277,57 +293,55 @@ class SecGame(QDialog, QWidget, Main): #게임창, 2번째 창
                 display = f"""당신은 {selectedBeads}개의 구슬을 선택했습니다.\nplayer1은 {chosenEvenOdd}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 수비 성공입니다.\n이번 판에서 {selectedBeads * 2}개의 구슬을 얻었습니다.\n플레이어1에게서 모든 구슬을 따냈으므로 승리입니다~~~!
                           """
                 self.messageEdit.setText(display)
+                self.showInfo()
 
             else:  # 계속 게임 진행
                 display = f"""당신은 {selectedBeads}개의 구슬을 선택했습니다.\nplayer1은 {chosenEvenOdd}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 수비 성공입니다.\n이번 판에서 {selectedBeads * 2}개의 구슬을 얻었습니다.
                           """
                 self.messageEdit.setText(display)
                 # 결과 출력
-                self.remainBead1Edit.setText(self.player1.callResult())
-                self.remainBead1Edit.setText(self.player2.callResult())
+                self.showInfo()
                 self.gameRound += 1
-                self.round_Edit.setText(str(self.gameRound))
+                # self.round_Edit.setText(str(self.gameRound))
+                self.messageEdit.append("\n다음 라운드로 진행을 원하시면 Game Start 버튼을 눌러주세요.")
 
         else:  # False라면 = 사용자가 졌다면
             self.player1.addBeads(selectedBeads)  # player1 구슬 개수 감소
             self.player2.subBeads(selectedBeads)  # player2 구슬 개수 증가
             if self.guess_Ob.finished(
                     self.player2.getNumOfBeads()):  # player2가 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 패배)
-                display = f"""
-                          당신은 {selectedBeads}개의 구슬을 선택했습니다.\nplayer1은 {chosenEvenOdd}를 선택했으므로 참가번호\n{Main.playerNum}번 {Main.name}님의 수비 실패입니다.\n이번 판에서 {selectedBeads}개의 구슬을 잃었습니다.\n남은 구슬이 없으므로 패배입니다.....ㅠㅠ
+                display = f"""당신은 {selectedBeads}개의 구슬을 선택했습니다.\nplayer1은 {chosenEvenOdd}를 선택했으므로 참가번호\n{Main.playerNum}번 {Main.name}님의 수비 실패입니다.\n이번 판에서 {selectedBeads}개의 구슬을 잃었습니다.\n남은 구슬이 없으므로 패배입니다.....ㅠㅠ
                           """
                 self.messageEdit.setText(display)
+                self.showInfo()
+
             else:  # 계속 게임 진행
                 display = f"""당신은 {selectedBeads}개의 구슬을 선택했습니다.\nplayer1은 {chosenEvenOdd}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 수비 실패입니다.\n이번 판에서 {selectedBeads}개의 구슬을 잃었습니다.
                           """
                 self.messageEdit.setText(display)
                 # 결과 출력
-                self.remainBead1Edit.setText(self.player1.callResult())
-                self.remainBead1Edit.setText(self.player2.callResult())
+                self.showInfo()
                 self.gameRound += 1
-                self.round_Edit.setText(str(self.gameRound))
+                # self.round_Edit.setText(str(self.gameRound))
+                self.messageEdit.append("\n다음 라운드로 진행을 원하시면 Game Start 버튼을 눌러주세요.")
 
-
-    # 라운드, 현재 가지고 있는 구슬을 보여주는 함수
+    # 현재 가지고 있는 구슬을 보여주는 함수
     def showInfo(self):
-        self.round_Edit.setText(str(self.gameRound))
         self.remainBead1Edit.setText(self.player1.callResult())
         self.remainBead2Edit.setText(self.player2.callResult())
 
-    def startBeadGame(self):  # <-- 내가 차근차근 구현하려던 그 시작 부분 물론 여기부터 안돼
+    def startBeadGame(self):
+        self.choiceNumEdit.clear()
+        self.round_Edit.setText(str(self.gameRound))
+        self.messageEdit.setText(f"<<{self.gameRound}라운드>>")
         if self.gameRound % 2 == 1:  # 홀수 판: player2(사용자)-공격, player1(컴퓨터)-수비
-            self.messageEdit.setText(f"<<{self.gameRound}라운드>> 공격자입니다.")
             display = self.player1.messageOutput()  # player1이 수비자일 때 출력하는 메시지
-            self.messageEdit.append(display)
         else:  # 짝수 판: player1(컴퓨터)-공격, player2(사용자)-공격
-            self.messageEdit.setText(f"<<{self.gameRound}라운드>> 공격자입니다.")
             display = self.player2.messageOutput()  # player2가 수비자일 때 출력하는 메시지
-            self.messageEdit.append(display)
+        self.messageEdit.append(display)
 
 
-
-
-if __name__ == "__main__" :
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     gm = SqGame()
     sys.exit(app.exec_())
