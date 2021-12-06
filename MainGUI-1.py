@@ -17,7 +17,6 @@ class Main:
 class SqGame(QWidget, Main):
     def __init__(self):  # 생성자
         super().__init__()
-        self.mainVariables = Main()
         self.initUI()
 
     def initUI(self):
