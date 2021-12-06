@@ -4,13 +4,12 @@ from player1 import Player1  # player1: 컴퓨터
 from player2 import Player2  # player2: 사용자
 import time
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import Qt
 
 
 # 두 개의 창이 공유하는 변수를 저장하는 상위클래스
 class Main:
-    name = ''
-    playerNum = ''
+    name = None
+    playerNum = None
     beadNum = 0
 
 
