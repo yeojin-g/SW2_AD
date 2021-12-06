@@ -326,8 +326,8 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
 
     # 현재 가지고 있는 구슬을 보여주는 함수
     def showInfo(self):
-        self.remainBead1Edit.setText(self.player1.callResult())
-        self.remainBead2Edit.setText(self.player2.callResult())
+        self.remainBead1Edit.setText(self.player1.result())
+        self.remainBead2Edit.setText(self.player2.result(self.name))
 
     def startBeadGame(self):
         self.choiceNumEdit.clear()

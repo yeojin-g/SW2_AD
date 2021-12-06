@@ -34,8 +34,7 @@ class Player:
         return self.numOfBeads
 
     # 한 라운드를 한 뒤 플레이어의 남은 구슬 수 프린트하는 함수
-    def result(self, name):
+    def result(self, name='깐부'):
         pRes = self.currentBeadsDrawing()
         res = f'''{name}님 남은 구슬: {self.getNumOfBeads()}개\n{pRes}'''
         return res
-

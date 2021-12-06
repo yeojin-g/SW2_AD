@@ -32,7 +32,3 @@ class Player1(Player):
         note = f"""플레이어1(수비자)가 {self.numOfBeads}개 중 몇 개의 구슬을 걸었습니다.\n홀수/짝수 중 하나를 선택한 다음 Enter 버튼을 눌러주세요.
                """
         return note
-
-    # result 함수를 부르는 함수
-    def callResult(self):
-        return self.result('player1')
