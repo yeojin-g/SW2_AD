@@ -29,6 +29,6 @@ class Player1(Player):
 
     # player1이 수비자일 때 출력하는 메시지
     def messageOutput(self):
-        note = f"""깐부님께서 {self.numOfBeads}개 중 몇 개의 구슬을 걸었습니다.\n홀수/짝수 중 하나를 선택한 다음 Enter 버튼을 눌러주세요.
+        note = f"""자, 내가 가진 구슬 {self.numOfBeads}개 중 몇 개를 손에 쥐었네.\n홀짝 중 하나를 고르고 Enter 버튼을 누르게나. 잘 골라보게. 허허.
                """
         return note
