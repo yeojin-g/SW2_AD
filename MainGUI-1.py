@@ -248,7 +248,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
                 self.showInfo()
 
             else:  # 계속 게임 진행
-                display = f"""player1은 {selectedBeads}개의 구슬을 선택했습니다.\n{answer}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 공격 성공입니다.\n이번 판에서 {selectedBeads}개의 구슬을 얻었습니다.
+                display = f"""깐부님께서는 {selectedBeads}개의 구슬을 선택했습니다.\n{answer}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 공격 성공입니다.\n이번 판에서 {selectedBeads}개의 구슬을 얻었습니다.
                           """
                 self.messageEdit.setText(display)
                 # 결과 출력
@@ -262,13 +262,13 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
             self.player2.subBeads(selectedBeads * 2)  # player2 구슬 개수 증가
             if self.guess_Ob.finished(
                     self.player2.getNumOfBeads()):  # player2가 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 패배)
-                display = f"""player1은 {selectedBeads}개의 구슬을 선택했습니다.\n{answer}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 공격 실패입니다.\n이번 판에서 {selectedBeads * 2}개의 구슬을 잃었습니다.\n남은 구슬이 없으므로 패배입니다.....ㅠㅠ
+                display = f"""깐부님께서는 {selectedBeads}개의 구슬을 선택했습니다.\n{answer}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 공격 실패입니다.\n이번 판에서 {selectedBeads * 2}개의 구슬을 잃었습니다.\n남은 구슬이 없으므로 패배입니다.....ㅠㅠ
                           """
                 self.messageEdit.setText(display)
                 self.showInfo()
 
             else:  # 계속 게임 진행
-                display = f"""player1은 {selectedBeads}개의 구슬을 선택했습니다.\n{answer}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 공격 실패입니다.\n이번 판에서 {selectedBeads * 2}개의 구슬을 잃었습니다.
+                display = f"""깐부님께서는 {selectedBeads}개의 구슬을 선택했습니다.\n{answer}를 선택했으므로\n참가번호 {Main.playerNum}번 {Main.name}님의 공격 실패입니다.\n이번 판에서 {selectedBeads * 2}개의 구슬을 잃었습니다.
                           """
                 self.messageEdit.setText(display)
                 # 결과 출력
@@ -280,7 +280,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
     def guessWhenRoundEven(self):  # 짝수판 / player1(컴퓨터): 공격자, player2(사용자): 수비자
         selectedBeads = int(self.choiceNumEdit.text())  # 사용자가 건 구슬 수
         chosenEvenOdd = self.player1.randomChooseOddEven()  # player1(컴퓨터)-수비자. 홀수, 짝수 둘 중 하나 랜덤으로 고르기
-        display = "player1이 짝수/홀수를 고르는 중입니다. 잠시만 기다려주세요..."
+        display = "깐부님께서 짝수/홀수를 고르는 중입니다. 잠시만 기다려주세요..."
         self.messageEdit.setText(display)
         time.sleep(2)  # 2초 기다림
 
