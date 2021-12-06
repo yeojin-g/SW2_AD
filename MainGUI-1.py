@@ -24,7 +24,7 @@ class SqGame(QWidget, Main):
     def setWidgetStyle(self):
         # 배경색 설정
         pal = QPalette()
-        pal.setColor(QPalette.Background, QColor(0, 0, 0)) # 검은색
+        pal.setColor(QPalette.Background, QColor(0, 0, 0))  # 검은색
         self.setAutoFillBackground(True)
         self.setPalette(pal)
 
@@ -39,12 +39,11 @@ class SqGame(QWidget, Main):
 
     def initUI(self):
         # 이미지
-        titleImgLabel = QLabel(self) # 오징어게임 타이틀 이미지 라벨
-        titleImg = QPixmap('./title.png') # 오징어게임 타이틀 이미지
-        titleImg = titleImg.scaledToWidth(300) # 이미지 사이즈 조정
-        titleImgLabel.setPixmap(titleImg) # 라벨과 연결
-        titleImgLabel.setAlignment(Qt.AlignCenter) # 가운데 정렬
-
+        titleImgLabel = QLabel(self)  # 오징어게임 타이틀 이미지 라벨
+        titleImg = QPixmap('./title.png')  # 오징어게임 타이틀 이미지
+        titleImg = titleImg.scaledToWidth(300)  # 이미지 사이즈 조정
+        titleImgLabel.setPixmap(titleImg)  # 라벨과 연결
+        titleImgLabel.setAlignment(Qt.AlignCenter)  # 가운데 정렬
 
         # 문자열
         title = QLabel("- 구슬 게임 -")
@@ -170,8 +169,6 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         font.addApplicationFont('./나눔손글씨 할아버지의나눔.ttf')
         app.setFont(QFont('나눔손글씨 할아버지의나눔', 13))
 
-
-
     def initUI(self):
         # 이미지
         titleImgLabel = QLabel(self)  # 오징어게임 타이틀 이미지 라벨
@@ -288,6 +285,8 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
     def guessWhenRoundOdd(self, answer):  # 홀수판 / player1(컴퓨터): 수비자, player2(사용자): 공격자
         selectedBeads = self.player1.randomNumberOfBeads()  # player1(컴퓨터)-수비자.랜덤으로 구슬 고르기
         if self.guess_Ob.guess(selectedBeads, answer):  # True일 때 = 사용자가 이겼을 때
+            if selectedBeads > self.player1.getNumOfBeads():
+                selectedBeads = self.player1.getNumOfBeads()
             self.player1.subBeads(selectedBeads)  # player1 구슬 개수 감소
             self.player2.addBeads(selectedBeads)  # player2 구슬 개수 증가
             if self.guess_Ob.finished(
@@ -304,14 +303,15 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
                 # 결과 출력
                 self.showInfo()
                 self.gameRound += 1
-
                 self.messageEdit.append("\n다음 판을 할 준비가 됐나?\n됐다면 Game Start 버튼을 누르게.")
 
         else:  # False = 사용자가 졌다면
-            self.player1.addBeads(selectedBeads * 2)  # player1 구슬 개수 감소
-            self.player2.subBeads(selectedBeads * 2)  # player2 구슬 개수 증가
-            if self.guess_Ob.finished(
-                    self.player2.getNumOfBeads()):  # player2가 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 패배)
+            changeBeads = selectedBeads * 2
+            if changeBeads > self.player2.getNumOfBeads():
+                changeBeads = self.player2.getNumOfBeads()
+            self.player1.addBeads(changeBeads)  # player1 구슬 개수 증가
+            self.player2.subBeads(changeBeads)  # player2 구슬 개수 감소
+            if self.guess_Ob.finished(self.player2.getNumOfBeads()):  # player2가 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 패배)
                 display = f"""자, 나는 {selectedBeads}개를 쥐었었네.\n자네가 {answer}라고 했으니\n이런! 참가번호 {Main.playerNum}번 {Main.name},\n자네가 졌구만. 허허.\n어서 {selectedBeads * 2}개의 구슬을 나에게 주게.\n\n아니, 설마 자네 구슬을 다 잃은겐가?\n너무 그렇게 보지 말게나. 우린 깐부잖아~
                           """
                 self.messageEdit.setText(display)
@@ -335,8 +335,11 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         time.sleep(2)  # 2초 기다림
 
         if not self.guess_Ob.guess(selectedBeads, chosenEvenOdd):  # 사용자가 이겼을 때
-            self.player1.subBeads(selectedBeads * 2)  # player1 구슬 개수 감소
-            self.player2.addBeads(selectedBeads * 2)  # player2 구슬 개수 증가
+            changeBeads = selectedBeads * 2
+            if changeBeads > self.player1.getNumOfBeads():
+                changeBeads = self.player1.getNumOfBeads()
+            self.player1.subBeads(changeBeads)  # player1 구슬 개수 감소
+            self.player2.addBeads(changeBeads)  # player2 구슬 개수 증가
             if self.guess_Ob.finished(
                     self.player1.getNumOfBeads()):  # player1이 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 승리)
                 display = f"""흠, 자네는 {selectedBeads}개를 쥐고있었구만.\n내가 방금 뭐라 그랬더라..?\n아, 나는 {chosenEvenOdd}라 했네!\n이런! 참가번호 {Main.playerNum}번 {Main.name}, 자네가 수비에 성공했구만.\n여기 {selectedBeads * 2}개의 구슬을 주지.\n\n이런, 내 구슬을 다 잃었구만..!\n괜찮네. 다 가져, 자네꺼야. 우린 깐부잖아.
@@ -355,8 +358,10 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
                 self.messageEdit.append("\n다음 라운드로 가보자고!\nGame Start 버튼을 누르게.")
 
         else:  # False라면 = 사용자가 졌다면
-            self.player1.addBeads(selectedBeads)  # player1 구슬 개수 감소
-            self.player2.subBeads(selectedBeads)  # player2 구슬 개수 증가
+            if selectedBeads > self.player2.getNumOfBeads():
+                selectedBeads = self.player2.getNumOfBeads()
+            self.player1.addBeads(selectedBeads)  # player1 구슬 개수 증가
+            self.player2.subBeads(selectedBeads)  # player2 구슬 개수 감소
             if self.guess_Ob.finished(
                     self.player2.getNumOfBeads()):  # player2가 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 패배)
                 display = f"""흠, 자네는 {selectedBeads}개를 쥐고있었구만.\n내가 방금 뭐라 그랬더라..?\n아, 나는 {chosenEvenOdd}라 했네!\n허허! 참가번호 {Main.playerNum}번 {Main.name}, 자네가 졌구만!\n어서 {selectedBeads}개의 구슬을 나에게 주게.\n\n아니, 설마 자네 구슬을 다 잃은겐가?\n너무 그렇게 보지 말게나. 우린 깐부잖아~
