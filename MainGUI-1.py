@@ -183,8 +183,9 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.gameRound = 1
         self.initUI()
         self.showInfo()  # 구슬의 개수 정보를 보여줌
-        self.oddOrEven = ''  # 사용자가 공격하는 경우, 즉 홀수판의 경우 사용자가 홀/짝 중 고른 것을 저장하는 변수
+        self.oddOrEven = None  # 사용자가 공격하는 경우, 즉 홀수판의 경우 사용자가 홀/짝 중 고른 것을 저장하는 변수
         self.musicApply()  # 음악 플레이
+        self.disableSetting()  # 처음에 버튼을 비활성화, lineEdit read only로 만드는 함수
 
     def setWidgetStyle(self):
         # 배경색 설정
@@ -204,7 +205,6 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
 
     def musicApply(self):
         music_file = '오징어게임 리코더.mp3'
-
         pygame.mixer.init()
         pygame.mixer.music.load(music_file)
         pygame.mixer.music.set_volume(1000)
@@ -309,6 +309,12 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         # 게임 시작버튼을 누르라는 메시지 출력
         self.messageEdit.setText("게임을 시작할까?\n그렇다면 Game Start 버튼을 누르게.")
 
+    def disableSetting(self):  # 홀수버튼, 짝수버튼, enter버튼 비활성화
+        self.oddNumButton.setDisabled(True)
+        self.evenNumButton.setDisabled(True)
+        self.enterEventButton.setDisabled(True)
+        self.choiceNumEdit.setReadOnly(True)
+
     def Back(self):  # Back 버튼 눌렀을 때 함수
         pygame.mixer.quit()
         self.close()  # 창 닫기
@@ -318,12 +324,17 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
 
     def oddNumButtonClicked(self):
         self.oddOrEven = "홀수"
+        self.enterEventButton.setDisabled(False)  # enter 버튼 활성화
 
     def evenNumButtonClicked(self):
         self.oddOrEven = "짝수"
+        self.enterEventButton.setDisabled(False)  # enter 버튼 활성화
 
     def enterEventButtonClicked(self):  # gameRound의 홀/짝에 따라 다른 함수 실행하게 함
         if self.gameRound % 2 == 1:  # 홀수판이면
+            if self.oddOrEven is None:  # 홀짝 변수가 None인지 확인 (홀 or 짝 버튼이 눌리지 않았을 때)
+                self.messageEdit.setText("홀짝 중 고르랑께~")
+                return
             self.guessWhenRoundOdd(self.oddOrEven)
         else:
             self.guessWhenRoundEven()
@@ -371,6 +382,8 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
                 self.gameRound += 1
                 # self.round_Edit.setText(str(self.gameRound))
                 self.messageEdit.append("\n다음 라운드로 가보자고!\nGame Start 버튼을 누르게.")
+        self.oddOrEven = None  # 홀짝 정보 초기화
+        self.disableSetting()  # 홀/짝/enter 버튼, 구슬 line edit 비활성화
 
     def guessWhenRoundEven(self):  # 짝수판 / player1(컴퓨터): 공격자, player2(사용자): 수비자
         if not self.choiceNumEdit.text().isdecimal():  # 숫자를 입력하지 않았을 때
@@ -429,6 +442,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
                 self.gameRound += 1
                 # self.round_Edit.setText(str(self.gameRound))
                 self.messageEdit.append("\n다음 판을 할 준비가 됐나?\n됐다면 Game Start 버튼을 누르게.")
+        self.disableSetting()  # 홀/짝/enter 버튼, 구슬 line edit 비활성화
 
     # 현재 가지고 있는 구슬을 보여주는 함수
     def showInfo(self):
@@ -441,8 +455,12 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.messageEdit.setText(f"<<{self.gameRound}라운드>>")
         if self.gameRound % 2 == 1:  # 홀수 판: player2(사용자)-공격, player1(컴퓨터)-수비
             display = self.player1.messageOutput()  # player1이 수비자일 때 출력하는 메시지
+            self.oddNumButton.setEnabled(True)  # 홀수 버튼 활성화
+            self.evenNumButton.setEnabled(True)  # 짝수 버튼 활성화
         else:  # 짝수 판: player1(컴퓨터)-공격, player2(사용자)-공격
             display = self.player2.messageOutput()  # player2가 수비자일 때 출력하는 메시지
+            self.choiceNumEdit.setReadOnly(False)  # 게임에 걸 구슬의 개수 write 가능
+            self.enterEventButton.setDisabled(False)  # enter 버튼 활성화
         self.messageEdit.append(display)
 
 
