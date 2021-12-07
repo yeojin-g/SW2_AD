@@ -132,7 +132,6 @@ class SqGame(QWidget, Main):
 
         # 버튼 연결
         self.nextButton.clicked.connect(self.settingInfo)
-        self.nextButton.clicked.connect(self.next_clicked)
 
         # 윈도우 위치 및 타이틀, 메인 레이아웃 설정
         self.setLayout(vbox)
@@ -150,17 +149,24 @@ class SqGame(QWidget, Main):
 
     def settingInfo(self):
         # 예외 처리
-        if not self.ptcNumberEdit.text().isdecimal():
+        if len(self.nameEdit.text()) == 0:  # 이름을 입력하지 않은 경우
+            self.ErrorEdit.setText("이름을 입력해주십시오.")
+        elif len(self.ptcNumberEdit.text()) == 0:  # 참가번호를 입력하지 않은 경우
+            self.ErrorEdit.setText("참가번호를 입력해주십시오.")
+        elif not self.ptcNumberEdit.text().isdecimal():  # 참가번호를 숫자로 입력하지 않은 경우
             self.ErrorEdit.setText("참가번호에는 숫자만 입력해주십시오.")
-        elif not self.pickBeadNumEdit.text().isdecimal():
+        elif len(self.pickBeadNumEdit.text()) == 0:  # 총 구슬의 개수를 입력하지 않은 경우
+            self.ErrorEdit.setText("총 구슬의 개수를 입력해주십시오.")
+        elif not self.pickBeadNumEdit.text().isdecimal():  # 총 구슬의 개수를 숫자로 입력하지 않은 경우
             self.ErrorEdit.setText("총 구슬의 개수는 숫자만 입력해주십시오.")
-        elif not (10 <= int(self.pickBeadNumEdit.text()) <= 15):
+        elif not (10 <= int(self.pickBeadNumEdit.text()) <= 15):  # 제한된 구슬의 개수(10~15개)로 입력하지 않은 경우
             self.ErrorEdit.setText("총 구슬의 개수는 10에서 15까지의 숫자만 입력해주십시오.")
         else:
             Main.name = self.nameEdit.text()
             Main.playerNum = self.ptcNumberEdit.text()
             Main.beadNum = int(self.pickBeadNumEdit.text())
-            self.next_clicked()
+            self.ErrorEdit.clear()  # 에러 메시지 삭제
+            self.next_clicked()  # 다음 창으로 넘어가기
 
 
 class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
