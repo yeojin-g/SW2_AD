@@ -6,6 +6,7 @@ import time
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
+import pygame
 
 
 # 두 개의 창이 공유하는 변수를 저장하는 상위클래스
@@ -20,6 +21,7 @@ class SqGame(QWidget, Main):
         super().__init__()
         self.initUI()
         self.setWidgetStyle()
+        self.musicApply()
 
     def setWidgetStyle(self):
         # 배경색 설정
@@ -36,6 +38,14 @@ class SqGame(QWidget, Main):
         font = QFontDatabase()
         font.addApplicationFont('./나눔손글씨 할아버지의나눔.ttf')
         app.setFont(QFont('나눔손글씨 할아버지의나눔', 14))
+
+    def musicApply(self):
+        music_file = '트럼펫 협주곡.mp3'
+
+        pygame.mixer.init()
+        pygame.mixer.music.load(music_file)
+        pygame.mixer.music.set_volume(1800)
+        pygame.mixer.music.play(-1)
 
     def initUI(self):
         # 이미지
@@ -132,6 +142,7 @@ class SqGame(QWidget, Main):
         self.show()
 
     def next_clicked(self):
+        pygame.mixer.quit()
         self.hide()  # 메인 윈도우 숨김
         self.second = SecGame()
         self.second.exec()  # 두번째 창 닫을 때까지 기다림
@@ -166,6 +177,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.initUI()
         self.showInfo()  # 구슬의 개수 정보를 보여줌
         self.oddOrEven = ''  # 사용자가 공격하는 경우, 즉 홀수판의 경우 사용자가 홀/짝 중 고른 것을 저장하는 변수
+        self.musicApply()
 
     def setWidgetStyle(self):
         # 배경색 설정
@@ -182,6 +194,13 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         font = QFontDatabase()
         font.addApplicationFont('./나눔손글씨 할아버지의나눔.ttf')
         app.setFont(QFont('나눔손글씨 할아버지의나눔', 13))
+
+    def musicApply(self):
+        music_file = '오징어게임 리코더.mp3'
+
+        pygame.mixer.init()
+        pygame.mixer.music.load(music_file)
+        pygame.mixer.music.play()
 
     def initUI(self):
         # 이미지
@@ -283,6 +302,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.messageEdit.setText("게임을 시작할까?\n그렇다면 Game Start 버튼을 누르게.")
 
     def Back(self):  # Back 버튼 눌렀을 때 함수
+        pygame.mixer.quit()
         self.close()  # 창 닫기
         self.close()  # 창 닫기
 
