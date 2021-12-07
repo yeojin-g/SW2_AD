@@ -137,11 +137,9 @@ class SqGame(QWidget, Main):
         self.show()  # 두번째 창 닫으면 첫 번째 창 보여짐
 
     def settingInfo(self):
-        try:
-            Main.name = self.nameEdit.text()
-            Main.playerNum = self.ptcNumberEdit.text()
-            Main.beadNum = int(self.pickBeadNumEdit.text())
-
+        Main.name = self.nameEdit.text()
+        Main.playerNum = self.ptcNumberEdit.text()
+        Main.beadNum = int(self.pickBeadNumEdit.text())
 
 class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
 
@@ -205,6 +203,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.evenNumButton = QPushButton('짝')
         self.enterEventButton = QPushButton('Enter')
         self.startButton = QPushButton('Game Start')
+        self.restartButton = QPushButton('Restart')
 
         # 라운드 알림 배치
         hboxR = QHBoxLayout()
@@ -223,13 +222,14 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         hboxB.addWidget(self.enterEventButton)
         hboxB.addStretch(1)
 
-        # 1-2열 - 시작 버튼, 구슬 수, 홀짝 및 엔터버튼
+        # 1-2열 - 시작 버튼, 구슬 수, 홀짝 및 엔터버튼, 재시작 버튼
         grid1_2 = QGridLayout()
         grid1_2.setSpacing(15)
         grid1_2.addWidget(self.startButton, 0, 0, 1, 2)
         grid1_2.addWidget(choiceNum, 1, 0, 1, 2)
         grid1_2.addWidget(self.choiceNumEdit, 2, 0, 1, 2)
         grid1_2.addLayout(hboxB, 3, 0, 2, 2)
+        grid1_2.addWidget(self.restartButton, 4, 0, 1, 2)
 
         # 2-1열 - player1 남은 구슬 출력 창
         grid2_1 = QGridLayout()
