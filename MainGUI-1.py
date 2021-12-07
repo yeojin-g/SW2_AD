@@ -61,8 +61,9 @@ class SqGame(QWidget, Main):
         self.nameEdit = QLineEdit()
         self.ptcNumberEdit = QLineEdit()
         self.pickBeadNumEdit = QLineEdit("10개 이상, 15개 이하")
-        self.ErrorEdit = QLineEdit()
+        self.ErrorEdit = QLineEdit()  # 에러메시지 적는 칸
         self.ErrorEdit.setReadOnly(True)
+        self.ErrorEdit.setStyleSheet("color: rgb(233, 075, 134);")  # '오징어게임' 타이틀과 색상이 같게
 
         # 버튼
         self.nextButton = QPushButton('Next Page!')
@@ -121,7 +122,6 @@ class SqGame(QWidget, Main):
 
         # 버튼 연결
         self.nextButton.clicked.connect(self.settingInfo)
-        self.nextButton.clicked.connect(self.next_clicked)
 
         # 윈도우 위치 및 타이틀, 메인 레이아웃 설정
         self.setLayout(vbox)
@@ -137,10 +137,18 @@ class SqGame(QWidget, Main):
         self.show()  # 두번째 창 닫으면 첫 번째 창 보여짐
 
     def settingInfo(self):
-        try:
+        # 예외 처리
+        if not self.ptcNumberEdit.text().isdecimal():
+            self.ErrorEdit.setText("참가번호에는 숫자만 입력해주십시오.")
+        elif not self.pickBeadNumEdit.text().isdecimal():
+            self.ErrorEdit.setText("총 구슬의 개수는 숫자만 입력해주십시오.")
+        elif not (10 <= int(self.pickBeadNumEdit.text()) <= 15):
+            self.ErrorEdit.setText("총 구슬의 개수는 10에서 15까지의 숫자만 입력해주십시오.")
+        else:
             Main.name = self.nameEdit.text()
             Main.playerNum = self.ptcNumberEdit.text()
             Main.beadNum = int(self.pickBeadNumEdit.text())
+            self.next_clicked()
 
 
 class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
@@ -294,8 +302,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
                 selectedBeads = self.player1.getNumOfBeads()
             self.player1.subBeads(selectedBeads)  # player1 구슬 개수 감소
             self.player2.addBeads(selectedBeads)  # player2 구슬 개수 증가
-            if self.guess_Ob.finished(
-                    self.player1.getNumOfBeads()):  # player1가 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 승리)
+            if self.guess_Ob.finished(self.player1.getNumOfBeads()):  # player1가 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 승리)
                 display = f"""자, 나는 {selectedBeads}개를 쥐었었네.\n자네가 {answer}라고 했으니\n참가번호 {Main.playerNum}번 {Main.name},\n자네의 공격이 먹혔구만.\n여기 {selectedBeads}개의 구슬을 주겠네.\n\n이런, 내 구슬을 다 잃었구만..!\n괜찮네. 다 가져, 자네꺼야. 우린 깐부잖아. 
                           """
                 self.messageEdit.setText(display)
