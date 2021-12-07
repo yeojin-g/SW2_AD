@@ -61,6 +61,8 @@ class SqGame(QWidget, Main):
         self.nameEdit = QLineEdit()
         self.ptcNumberEdit = QLineEdit()
         self.pickBeadNumEdit = QLineEdit("10개 이상, 15개 이하")
+        self.ErrorEdit = QLineEdit()
+        self.ErrorEdit.setReadOnly(True)
 
         # 버튼
         self.nextButton = QPushButton('Next Page!')
@@ -112,6 +114,8 @@ class SqGame(QWidget, Main):
         vbox.addLayout(hbox4)
         vbox.addLayout(hbox5)
         vbox.addStretch(1)
+        vbox.addWidget(self.ErrorEdit)
+        vbox.addStretch(1)
         vbox.addWidget(self.nextButton)
         vbox.addStretch(1)
 
@@ -133,9 +137,10 @@ class SqGame(QWidget, Main):
         self.show()  # 두번째 창 닫으면 첫 번째 창 보여짐
 
     def settingInfo(self):
-        Main.name = self.nameEdit.text()
-        Main.playerNum = self.ptcNumberEdit.text()
-        Main.beadNum = int(self.pickBeadNumEdit.text())
+        try:
+            Main.name = self.nameEdit.text()
+            Main.playerNum = self.ptcNumberEdit.text()
+            Main.beadNum = int(self.pickBeadNumEdit.text())
 
 
 class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
