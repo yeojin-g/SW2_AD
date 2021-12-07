@@ -145,7 +145,7 @@ class SqGame(QWidget, Main):
         self.hide()  # 메인 윈도우 숨김
         self.second = SecGame()
         self.second.exec()  # 두번째 창 닫을 때까지 기다림
-        self.show()  # 두번째 창 닫으면 첫 번째 창 보여짐
+        # self.show()  # 두번째 창 닫으면 첫 번째 창 보여짐
 
     def settingInfo(self):
         # 예외 처리
@@ -166,7 +166,7 @@ class SqGame(QWidget, Main):
             Main.playerNum = self.ptcNumberEdit.text()
             Main.beadNum = int(self.pickBeadNumEdit.text())
             self.ErrorEdit.clear()  # 에러 메시지 삭제
-            self.next_clicked()  # 다음 창으로 넘어가기
+            self.next_clicked()  # 다음 창으로 넘어가는 함수
 
 
 class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
@@ -174,6 +174,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
     def __init__(self):  # 생성자
         super().__init__()
         self.setWidgetStyle()
+        self.sqgame = SqGame()  # SqGame 객체 생성
 
         # 객체 및 변수 설정
         self.player1 = Player1(Main.beadNum)
@@ -206,6 +207,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
 
         pygame.mixer.init()
         pygame.mixer.music.load(music_file)
+        pygame.mixer.music.set_volume(1000)
         pygame.mixer.music.play()
 
     def initUI(self):
@@ -310,7 +312,9 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
     def Back(self):  # Back 버튼 눌렀을 때 함수
         pygame.mixer.quit()
         self.close()  # 창 닫기
-        self.close()  # 창 닫기
+        self.sqgame.musicApply()
+        # self.close()  # 창 닫기
+        #   # 메인 창으로 돌아갔을 때 노래 재생
 
     def oddNumButtonClicked(self):
         self.oddOrEven = "홀수"
