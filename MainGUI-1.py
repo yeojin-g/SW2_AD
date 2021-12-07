@@ -184,7 +184,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.initUI()
         self.showInfo()  # 구슬의 개수 정보를 보여줌
         self.oddOrEven = ''  # 사용자가 공격하는 경우, 즉 홀수판의 경우 사용자가 홀/짝 중 고른 것을 저장하는 변수
-        self.musicApply()
+        self.musicApply()  # 음악 플레이
 
     def setWidgetStyle(self):
         # 배경색 설정
@@ -312,9 +312,9 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
     def Back(self):  # Back 버튼 눌렀을 때 함수
         pygame.mixer.quit()
         self.close()  # 창 닫기
-        self.sqgame.musicApply()
+        self.sqgame.musicApply()  # 메인 창으로 돌아갔을 때 노래 재생
+        # self.sqgame
         # self.close()  # 창 닫기
-        #   # 메인 창으로 돌아갔을 때 노래 재생
 
     def oddNumButtonClicked(self):
         self.oddOrEven = "홀수"
@@ -373,6 +373,12 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
                 self.messageEdit.append("\n다음 라운드로 가보자고!\nGame Start 버튼을 누르게.")
 
     def guessWhenRoundEven(self):  # 짝수판 / player1(컴퓨터): 공격자, player2(사용자): 수비자
+        if not self.choiceNumEdit.text().isdecimal():  # 숫자를 입력하지 않았을 때
+            self.messageEdit.append("\n어허, 숫자를 입력하게나~")
+            return
+        if int(self.choiceNumEdit.text()) > self.beadNum:  # 가지고 있는 구슬의 수보다 큰 수를 입력했을 때
+            self.messageEdit.append("\n자네가 구슬이 그렇게 많았었나~?")
+            return
         selectedBeads = int(self.choiceNumEdit.text())  # 사용자가 건 구슬 수
         chosenEvenOdd = self.player1.randomChooseOddEven()  # player1(컴퓨터)-수비자. 홀수, 짝수 둘 중 하나 랜덤으로 고르기
         display = "잠깐.. 고민할 시간을 좀 주게나.."
