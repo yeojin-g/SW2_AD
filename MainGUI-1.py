@@ -8,12 +8,17 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import Qt
 import pygame
 
-
 # 두 개의 창이 공유하는 변수를 저장하는 상위클래스
 class Main:
     name = None
     playerNum = None
     beadNum = 0
+
+    def musicApply(name):
+        music_file = name
+        pygame.mixer.init()
+        pygame.mixer.music.load(music_file)
+        pygame.mixer.music.play()
 
 
 class SqGame(QWidget, Main):
@@ -21,7 +26,8 @@ class SqGame(QWidget, Main):
         super().__init__()
         self.initUI()
         self.setWidgetStyle()
-        self.musicApply()
+        Main.musicApply("트럼펫 협주곡.mp3")
+
 
     def setWidgetStyle(self):
         # 배경색 설정
@@ -39,14 +45,6 @@ class SqGame(QWidget, Main):
         font.addApplicationFont('./나눔손글씨 할아버지의나눔.ttf')
         app.setFont(QFont('나눔손글씨 할아버지의나눔', 14))
 
-    def musicApply(self):
-        music_file = '트럼펫 협주곡.mp3'
-
-        pygame.mixer.init()
-        pygame.mixer.music.load(music_file)
-        pygame.mixer.music.set_volume(1800)
-        pygame.mixer.music.play(-1)
-
     def initUI(self):
         # 이미지
         titleImgLabel = QLabel(self)  # 오징어게임 타이틀 이미지 라벨
@@ -61,7 +59,15 @@ class SqGame(QWidget, Main):
         ptcNumber = QLabel("참가번호:")
         pickBeadNum = QLabel("개의 구슬로 게임 플레이")
         gameRuleTitle = QLabel("< 게임 방법 >")
-        gameRule = QLabel("""각 참가자들은 선택한 개수만큼 구슬을 가지고 시작합니다.\n수비자는 자신의 구슬 중 자신이 원하는만큼 손에 쥡니다.\n공격자는 수비자의 손에 쥐어진 구슬의 개수가 홀수인지, 짝수인지 맞춥니다.\n공격자가 홀짝 여부를 맞췄을 경우, 공격자는 수비자의 손에 쥐어진 모든 구슬을 갖게되고,\n공격자가 틀렸을 경우, 수비자에게 수비자가 쥐고있던 구슬의 2배만큼 주어야 합니다.\n공수교대는 한 턴마다 이루어지고, 구슬을 먼저 모두 잃게 되는 자가 게임에서 패배하게 됩니다.\n 모든 참가자들은 게임에서 살아남지 못할 경우, 그 대가를 치르게 됩니다.\n진행요원들이 여러분을 항시 감시하고 있으니 반칙은 삼가해주시기 바랍니다.\n그럼 행운을 빕니다.""")
+        gameRule = QLabel("\t"*8 + """각 참가자들은 선택한 개수만큼 구슬을 가지고 시작합니다.
+        수비자는 자신의 구슬 중 자신이 원하는만큼 손에 쥡니다.
+        공격자는 수비자의 손에 쥐어진 구슬의 개수가 홀수인지, 짝수인지 맞춥니다.
+        공격자가 홀짝 여부를 맞췄을 경우, 공격자는 수비자의 손에 쥐어진 모든 구슬을 갖게되고,
+        공격자가 틀렸을 경우, 수비자에게 수비자가 쥐고있던 구슬의 2배만큼 주어야 합니다.
+        공수교대는 한 턴마다 이루어지고, 구슬을 먼저 모두 잃게 되는 자가 게임에서 패배하게 됩니다.
+        모든 참가자들은 게임에서 살아남지 못할 경우, 그 대가를 치르게 됩니다.
+        진행요원들이 여러분을 항시 감시하고 있으니 반칙은 삼가해주시기 바랍니다.
+        그럼 행운을 빕니다.""")
 
         # 게임 룰 글씨 가운데 정렬
         gameRule.setAlignment(Qt.AlignCenter)
@@ -124,6 +130,7 @@ class SqGame(QWidget, Main):
         vbox.addLayout(hbox3)
         vbox.addStretch(1)
         vbox.addLayout(hbox4)
+        vbox.addStretch(1)
         vbox.addLayout(hbox5)
         vbox.addStretch(1)
         vbox.addWidget(self.ErrorEdit)
@@ -146,7 +153,9 @@ class SqGame(QWidget, Main):
         self.hide()  # 메인 윈도우 숨김
         self.second = SecGame()
         self.second.exec()  # 두번째 창 닫을 때까지 기다림
-        # self.show()  # 두번째 창 닫으면 첫 번째 창 보여짐
+        self.show()  # 두번째 창 닫으면 첫 번째 창 보여짐
+        Main.musicApply('트럼펫 협주곡.mp3')  # 메인 창으로 돌아갔을 때 노래 재생
+        pygame.mixer.music.set_volume(0.6)  # 음악 소리 조절
 
     def settingInfo(self):
         # 예외 처리
@@ -170,22 +179,23 @@ class SqGame(QWidget, Main):
             self.next_clicked()  # 다음 창으로 넘어가는 함수
 
 
-class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
 
+class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
     def __init__(self):  # 생성자
         super().__init__()
         self.setWidgetStyle()
-        self.sqgame = SqGame()  # SqGame 객체 생성
 
         # 객체 및 변수 설정
         self.player1 = Player1(Main.beadNum)
         self.player2 = Player2(Main.beadNum, Main.name, Main.playerNum)
         self.guess_Ob = Guess()
         self.gameRound = 1
+
         self.initUI()
         self.showInfo()  # 구슬의 개수 정보를 보여줌
         self.oddOrEven = None  # 사용자가 공격하는 경우, 즉 홀수판의 경우 사용자가 홀/짝 중 고른 것을 저장하는 변수
-        self.musicApply()  # 음악 플레이
+        Main.musicApply('오징어게임 리코더.mp3')  # 음악 플레이
+        pygame.mixer.music.set_volume(0.6) # 음악 소리 조절
         self.disableSetting()  # 처음에 버튼을 비활성화, lineEdit read only로 만드는 함수
 
     def setWidgetStyle(self):
@@ -204,12 +214,6 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         font.addApplicationFont('./나눔손글씨 할아버지의나눔.ttf')
         app.setFont(QFont('나눔손글씨 할아버지의나눔', 13))
 
-    def musicApply(self):
-        music_file = '오징어게임 리코더.mp3'
-        pygame.mixer.init()
-        pygame.mixer.music.load(music_file)
-        pygame.mixer.music.set_volume(1000)
-        pygame.mixer.music.play()
 
     def initUI(self):
         # 이미지
@@ -264,10 +268,10 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         # 1-2열 - 시작 버튼, 구슬 수, 홀짝 및 엔터버튼, 재시작 버튼
         grid1_2 = QGridLayout()
         grid1_2.setSpacing(15)
-        grid1_2.addWidget(self.startButton, 0, 0, 1, 2)
-        grid1_2.addWidget(choiceNum, 1, 0, 1, 2)
-        grid1_2.addWidget(self.choiceNumEdit, 2, 0, 1, 2)
-        grid1_2.addLayout(hboxB, 3, 0, 2, 2)
+        grid1_2.addWidget(self.startButton, 0, 0, 1, 1)
+        grid1_2.addWidget(choiceNum, 1, 0, 1, 1)
+        grid1_2.addWidget(self.choiceNumEdit, 2, 0, 1, 1)
+        grid1_2.addLayout(hboxB, 3, 0, 1, 2)
         grid1_2.addWidget(self.restartButton, 4, 0, 1, 2)
 
         # 2-1열 - player1 남은 구슬 출력 창
@@ -299,6 +303,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.oddNumButton.clicked.connect(self.oddOrEvenButtonClicked)
         self.evenNumButton.clicked.connect(self.oddOrEvenButtonClicked)
         self.enterEventButton.clicked.connect(self.enterEventButtonClicked)
+        self.restartButton.clicke.connect(self.restartButton)
 
         # 레이아웃, 사이즈, 윈도우 이름 설정
         self.setLayout(grid)
@@ -319,9 +324,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
     def Back(self):  # Back 버튼 눌렀을 때 함수
         pygame.mixer.quit()
         self.close()  # 창 닫기
-        self.sqgame.musicApply()  # 메인 창으로 돌아갔을 때 노래 재생
-        # self.sqgame
-        # self.close()  # 창 닫기
+        self.close()  # 창 닫기
 
     def oddOrEvenButtonClicked(self):
         sender = self.sender()  # 클릭된 버튼을 sender에 저장
@@ -469,6 +472,8 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
             self.enterEventButton.setDisabled(False)  # enter 버튼 활성화
         self.messageEdit.append(display)
 
+    def restartBeadGame(self):
+        pass
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
