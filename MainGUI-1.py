@@ -70,7 +70,8 @@ class SqGame(QWidget, Main):
         # 입출력창
         self.nameEdit = QLineEdit()
         self.ptcNumberEdit = QLineEdit()
-        self.pickBeadNumEdit = QLineEdit("10개 이상, 15개 이하")
+        self.pickBeadNumEdit = QLineEdit()
+        self.pickBeadNumEdit.setPlaceholderText("10개 이상, 15개 이하")
         self.ErrorEdit = QLineEdit()  # 에러메시지 적는 칸
         self.ErrorEdit.setReadOnly(True)
         self.ErrorEdit.setStyleSheet("color: rgb(233, 075, 134);")  # '오징어게임' 타이틀과 색상이 같게
@@ -389,11 +390,15 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
 
     def guessWhenRoundEven(self):  # 짝수판 / player1(컴퓨터): 공격자, player2(사용자): 수비자
         if not self.choiceNumEdit.text().isdecimal():  # 숫자를 입력하지 않았을 때
-            self.messageEdit.append("\n어허, 숫자를 입력하게나~")
+            self.messageEdit.setText("어허, 올바른 값을 입력하게나~")
             return
         if int(self.choiceNumEdit.text()) > self.player2.getNumOfBeads():  # 가지고 있는 구슬의 수보다 큰 수를 입력했을 때
-            self.messageEdit.append("\n자네가 구슬이 그렇게 많았었나~?")
+            self.messageEdit.setText("자네가 구슬이 그렇게 많았었나~?")
             return
+        if int(self.choiceNumEdit.text()) == 0: # 구슬의 개수가 0 또는 음수일 때
+            self.messageEdit.setText("0보다 큰 수를 골라야하지 않겠나!")
+            return
+
         selectedBeads = int(self.choiceNumEdit.text())  # 사용자가 건 구슬 수
         chosenEvenOdd = self.player1.randomChooseOddEven()  # player1(컴퓨터)-수비자. 홀수, 짝수 둘 중 하나 랜덤으로 고르기
         display = "잠깐.. 고민할 시간을 좀 주게나.."
