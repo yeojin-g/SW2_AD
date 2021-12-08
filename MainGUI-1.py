@@ -333,9 +333,6 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
 
     def enterEventButtonClicked(self):  # gameRound의 홀/짝에 따라 다른 함수 실행하게 함
         if self.gameRound % 2 == 1:  # 홀수판이면
-            if self.oddOrEven is None:  # 홀짝 변수가 None인지 확인 (홀 or 짝 버튼이 눌리지 않았을 때)
-                self.messageEdit.setText("홀짝 중 고르랑께~")
-                return
             self.guessWhenRoundOdd(self.oddOrEven)
         else:
             self.guessWhenRoundEven()
