@@ -70,7 +70,8 @@ class SqGame(QWidget, Main):
         # 입출력창
         self.nameEdit = QLineEdit()
         self.ptcNumberEdit = QLineEdit()
-        self.pickBeadNumEdit = QLineEdit("10개 이상, 15개 이하")
+        self.pickBeadNumEdit = QLineEdit()
+        self.pickBeadNumEdit.setPlaceholderText("10개 이상, 15개 이하")
         self.ErrorEdit = QLineEdit()  # 에러메시지 적는 칸
         self.ErrorEdit.setReadOnly(True)
         self.ErrorEdit.setStyleSheet("color: rgb(233, 075, 134);")  # '오징어게임' 타이틀과 색상이 같게
