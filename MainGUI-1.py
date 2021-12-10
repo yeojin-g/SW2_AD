@@ -17,7 +17,7 @@ class Main:
         music_file = name
         pygame.mixer.init()
         pygame.mixer.music.load(music_file)
-        pygame.mixer.music.play()
+        pygame.mixer.music.play(-1)
 
 
 class SqGame(QWidget, Main):
@@ -122,20 +122,13 @@ class SqGame(QWidget, Main):
         # 세로
         vbox = QVBoxLayout()
         vbox.addWidget(titleImgLabel)
-        vbox.addLayout(hbox1)
-        vbox.addStretch(1)
-        vbox.addLayout(hbox2)
-        vbox.addStretch(1)
-        vbox.addLayout(hbox3)
-        vbox.addStretch(1)
-        vbox.addLayout(hbox4)
-        vbox.addStretch(1)
-        vbox.addLayout(hbox5)
-        vbox.addStretch(1)
-        vbox.addWidget(self.ErrorEdit)
-        vbox.addStretch(1)
-        vbox.addWidget(self.nextButton)
-        vbox.addStretch(1)
+        vboxL = [hbox1, hbox2, hbox3, hbox4, hbox5, self.ErrorEdit, self.nextButton]
+        for i in range(0, len(vboxL)):
+            if i > 4:
+                vbox.addWidget(vboxL[i])
+            else:
+                vbox.addLayout(vboxL[i])
+            vbox.addStretch(1)
 
         # 버튼 연결
         self.nextButton.clicked.connect(self.settingInfo)
@@ -194,7 +187,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.showInfo()  # 구슬의 개수 정보를 보여줌
         self.oddOrEven = None  # 사용자가 공격하는 경우, 즉 홀수판의 경우 사용자가 홀/짝 중 고른 것을 저장하는 변수
         Main.musicApply('오징어게임 리코더.mp3')  # 음악 플레이
-        pygame.mixer.music.set_volume(0.3) # 음악 소리 조절
+        pygame.mixer.music.set_volume(0.2) # 음악 소리 조절
         self.disableSetting()  # 처음에 버튼을 비활성화, lineEdit read only로 만드는 함수
 
     def setWidgetStyle(self):
@@ -220,7 +213,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         titleImg = QPixmap('./title.png')  # 오징어게임 타이틀 이미지
         titleImg = titleImg.scaledToWidth(200)  # 이미지 사이즈 조정
         titleImgLabel.setPixmap(titleImg)  # 라벨과 연결
-        titleImgLabel.setAlignment(Qt.AlignCenter)  # 왼쪽 정렬
+        titleImgLabel.setAlignment(Qt.AlignCenter)  # 가운데 정렬
 
         # 문자열
         remainBead1 = QLabel('player1 남은 구슬 수: ')
@@ -297,8 +290,8 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         grid.addWidget(self.backButton, 10, 0, 1, 2)
 
         # 버튼 연결
-        self.backButton.clicked.connect(self.Back)
-        self.startButton.clicked.connect(self.startBeadGame)
+        self.backButton.clicked.connect(self.BackButtonClicked)
+        self.startButton.clicked.connect(self.startButtonClicked)
         self.oddNumButton.clicked.connect(self.oddOrEvenButtonClicked)
         self.evenNumButton.clicked.connect(self.oddOrEvenButtonClicked)
         self.enterEventButton.clicked.connect(self.enterEventButtonClicked)
@@ -320,7 +313,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.enterEventButton.setDisabled(True)
         self.choiceNumEdit.setReadOnly(True)
 
-    def Back(self):  # Back 버튼 눌렀을 때 함수
+    def BackButtonClicked(self):  # Back 버튼 눌렀을 때 함수
         pygame.mixer.quit()
         self.close()  # 창 닫기
         self.close()  # 창 닫기
@@ -391,12 +384,15 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
     def guessWhenRoundEven(self):  # 짝수판 / player1(컴퓨터): 공격자, player2(사용자): 수비자
         if not self.choiceNumEdit.text().isdecimal():  # 숫자를 입력하지 않았을 때
             self.messageEdit.setText("어허, 올바른 값을 입력하게나~")
+            self.choiceNumEdit.clear()
             return
         if int(self.choiceNumEdit.text()) > self.player2.getNumOfBeads():  # 가지고 있는 구슬의 수보다 큰 수를 입력했을 때
             self.messageEdit.setText("자네가 구슬이 그렇게 많았었나~?")
+            self.choiceNumEdit.clear()
             return
         if int(self.choiceNumEdit.text()) == 0: # 구슬의 개수가 0 또는 음수일 때
             self.messageEdit.setText("0보다 큰 수를 골라야하지 않겠나!")
+            self.choiceNumEdit.clear()
             return
 
         selectedBeads = int(self.choiceNumEdit.text())  # 사용자가 건 구슬 수
@@ -425,7 +421,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
             self.beadNumControl(self.player1, self.player2, selectedBeads) # 결과에 맞게 구슬 개수 조정
             # 프린트할 메세지 리스트
             display = [f"흠, 자네는 {selectedBeads}개를 쥐고있었구만.\n내가 방금 뭐라 그랬더라..?",
-                       f"\n아, 나는 {chosenEvenOdd}라 했네!\n허허! 참가번호 {Main.playerNum}번 {Main.name}, 자네가 졌구만!\n어서 {selectedBeads}개의 구슬을 나에게 주게.",
+                       f"아, 나는 {chosenEvenOdd}라 했네!\n허허! 참가번호 {Main.playerNum}번 {Main.name}, 자네가 졌구만!\n어서 {selectedBeads}개의 구슬을 나에게 주게.",
                        "아니, 설마 자네 구슬을 다 잃은겐가?\n너무 그렇게 보지 말게나. 우린 깐부잖아~\n게임을 더 하고 싶으면 restart 버튼을 누르면 되네.", ]
             if self.guess_Ob.finished(self.player2.getNumOfBeads()):  # player2가 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 패배)
                 self.printMessage(display)
@@ -441,7 +437,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.remainBead1Edit.setText(self.player1.result())
         self.remainBead2Edit.setText(self.player2.result(self.name))
 
-    def startBeadGame(self):
+    def startButtonClicked(self):
         self.choiceNumEdit.clear()
         self.round_Edit.setText(str(self.gameRound))
         self.messageEdit.setText(f"<<{self.gameRound}라운드>>")
@@ -467,7 +463,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         display = "다시 시작해보자고!"
         self.messageEdit.setText(display)
         self.sleep(2) # 문구를 볼 수 있도록 2초 대기
-        self.startBeadGame() # 재시작
+        self.startButtonClicked() # 재시작
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
