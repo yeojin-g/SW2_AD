@@ -2,10 +2,9 @@ import sys
 from guess import Guess
 from player1 import Player1  # player1: 컴퓨터
 from player2 import Player2  # player2: 사용자
-import time
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import *
 import pygame
 
 # 두 개의 창이 공유하는 변수를 저장하는 상위클래스
@@ -195,7 +194,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.showInfo()  # 구슬의 개수 정보를 보여줌
         self.oddOrEven = None  # 사용자가 공격하는 경우, 즉 홀수판의 경우 사용자가 홀/짝 중 고른 것을 저장하는 변수
         Main.musicApply('오징어게임 리코더.mp3')  # 음악 플레이
-        pygame.mixer.music.set_volume(0.6) # 음악 소리 조절
+        pygame.mixer.music.set_volume(0.3) # 음악 소리 조절
         self.disableSetting()  # 처음에 버튼을 비활성화, lineEdit read only로 만드는 함수
 
     def setWidgetStyle(self):
@@ -303,7 +302,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.oddNumButton.clicked.connect(self.oddOrEvenButtonClicked)
         self.evenNumButton.clicked.connect(self.oddOrEvenButtonClicked)
         self.enterEventButton.clicked.connect(self.enterEventButtonClicked)
-        self.restartButton.clicke.connect(self.restartButton)
+        self.restartButton.clicked.connect(self.restartButtonClicked)
 
         # 레이아웃, 사이즈, 윈도우 이름 설정
         self.setLayout(grid)
@@ -340,6 +339,14 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         else:
             self.guessWhenRoundEven()
 
+    def printMessage(self, list): # 메세지 리스트 프린트 함수
+        for i in list:
+            self.messageEdit.setText(i)
+            loop = QEventLoop()
+            QTimer.singleShot(1500, loop.quit)
+            loop.exec_()
+        self.showInfo()
+
     def guessWhenRoundOdd(self, answer):  # 홀수판 / player1(컴퓨터): 수비자, player2(사용자): 공격자
         selectedBeads = self.player1.randomNumberOfBeads()  # player1(컴퓨터)-수비자.랜덤으로 구슬 고르기
         if self.guess_Ob.guess(selectedBeads, answer):  # True일 때 = 사용자가 이겼을 때
@@ -347,19 +354,14 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
                 selectedBeads = self.player1.getNumOfBeads()
             self.player1.subBeads(selectedBeads)  # player1 구슬 개수 감소
             self.player2.addBeads(selectedBeads)  # player2 구슬 개수 증가
+            # 메세지 출력 리스트
+            display = [f"자, 나는 {selectedBeads}개를 쥐었었네.\n자네가 {answer}라고 했으니, 참가번호 {Main.playerNum}번 {Main.name},\n자네의 공격이 먹혔구만.\n여기 {selectedBeads}개의 구슬을 주겠네.",
+                        "이런, 내 구슬을 다 잃었구만..!\n괜찮네. 다 가져, 자네꺼야. 우린 깐부잖아.\n게임을 더 하고 싶으면 restart 버튼을 누르면 되네."]
             if self.guess_Ob.finished(self.player1.getNumOfBeads()):  # player1가 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 승리)
-                display = f"""자, 나는 {selectedBeads}개를 쥐었었네.\n자네가 {answer}라고 했으니\n참가번호 {Main.playerNum}번 {Main.name},\n자네의 공격이 먹혔구만.\n여기 {selectedBeads}개의 구슬을 주겠네.\n\n이런, 내 구슬을 다 잃었구만..!\n괜찮네. 다 가져, 자네꺼야. 우린 깐부잖아.\n게임을 더 하고 싶으면 restart 버튼을 누르면 되네.
-                          """
-                self.messageEdit.setText(display)
-                self.showInfo()
+                self.printMessage(display)
                 self.startButton.setDisabled(True)  # 게임이 끝났으므로 start game 버튼 비활성화
-
             else:  # 계속 게임 진행
-                display = f"""자, 나는 {selectedBeads}개를 쥐었었네.\n자네가 {answer}라고 했으니\n참가번호 {Main.playerNum}번 {Main.name},\n자네의 공격이 먹혔구만.\n여기 {selectedBeads}개의 구슬을 주겠네.
-                          """
-                self.messageEdit.setText(display)
-                # 결과 출력
-                self.showInfo()
+                self.printMessage(display[:1])
                 self.gameRound += 1
                 self.messageEdit.append("\n다음 판을 할 준비가 됐나?\n됐다면 Game Start 버튼을 누르게.")
 
@@ -369,21 +371,15 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
                 changeBeads = self.player2.getNumOfBeads()
             self.player1.addBeads(changeBeads)  # player1 구슬 개수 증가
             self.player2.subBeads(changeBeads)  # player2 구슬 개수 감소
+            # 메세지 출력 리스트
+            display = [f"자, 나는 {selectedBeads}개를 쥐었었네.\n자네가 {answer}라고 했으니\n이런! 참가번호 {Main.playerNum}번 {Main.name},\n자네가 졌구만. 허허.\n어서 {selectedBeads * 2}개의 구슬을 나에게 주게."
+                        "아니, 설마 자네 구슬을 다 잃은겐가?\n너무 그렇게 보지 말게나. 우린 깐부잖아~\n게임을 더 하고 싶으면 restart 버튼을 누르면 되네.", ]
             if self.guess_Ob.finished(self.player2.getNumOfBeads()):  # player2가 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 패배)
-                display = f"""자, 나는 {selectedBeads}개를 쥐었었네.\n자네가 {answer}라고 했으니\n이런! 참가번호 {Main.playerNum}번 {Main.name},\n자네가 졌구만. 허허.\n어서 {selectedBeads * 2}개의 구슬을 나에게 주게.\n\n아니, 설마 자네 구슬을 다 잃은겐가?\n너무 그렇게 보지 말게나. 우린 깐부잖아~\n게임을 더 하고 싶으면 restart 버튼을 누르면 되네.
-                          """
-                self.messageEdit.setText(display)
-                self.showInfo()
+                self.printMessage(display)
                 self.startButton.setDisabled(True)  # 게임이 끝났으므로 start game 버튼 비활성화
-
             else:  # 계속 게임 진행
-                display = f"""자, 나는 {selectedBeads}개를 쥐었었네.\n자네가 {answer}라고 했으니\n이런! 참가번호 {Main.playerNum}번 {Main.name},\n자네가 졌구만. 허허.\n어서 {selectedBeads * 2}개의 구슬을 나에게 주게.
-                          """
-                self.messageEdit.setText(display)
-                # 결과 출력
-                self.showInfo()
+                self.printMessage(display[:1])
                 self.gameRound += 1
-                # self.round_Edit.setText(str(self.gameRound))
                 self.messageEdit.append("\n다음 라운드로 가보자고!\nGame Start 버튼을 누르게.")
         self.oddOrEven = None  # 홀짝 정보 초기화
         self.disableSetting()  # 홀/짝/enter 버튼, 구슬 line edit 비활성화
@@ -403,7 +399,10 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         chosenEvenOdd = self.player1.randomChooseOddEven()  # player1(컴퓨터)-수비자. 홀수, 짝수 둘 중 하나 랜덤으로 고르기
         display = "잠깐.. 고민할 시간을 좀 주게나.."
         self.messageEdit.setText(display)
-        time.sleep(2)  # 2초 기다림
+        # 문구를 볼 수 있도록 2초 대기
+        loop = QEventLoop()
+        QTimer.singleShot(2000, loop.quit)
+        loop.exec_()
 
         if not self.guess_Ob.guess(selectedBeads, chosenEvenOdd):  # 사용자가 이겼을 때
             changeBeads = selectedBeads * 2
@@ -411,22 +410,18 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
                 changeBeads = self.player1.getNumOfBeads()
             self.player1.subBeads(changeBeads)  # player1 구슬 개수 감소
             self.player2.addBeads(changeBeads)  # player2 구슬 개수 증가
-            if self.guess_Ob.finished(
-                    self.player1.getNumOfBeads()):  # player1이 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 승리)
-                display = f"""흠, 자네는 {selectedBeads}개를 쥐고있었구만.\n내가 방금 뭐라 그랬더라..?\n아, 나는 {chosenEvenOdd}라 했네!\n이런! 참가번호 {Main.playerNum}번 {Main.name}, 자네가 수비에 성공했구만.\n여기 {selectedBeads * 2}개의 구슬을 주지.\n\n이런, 내 구슬을 다 잃었구만..!\n괜찮네. 다 가져, 자네꺼야. 우린 깐부잖아.\n게임을 더 하고 싶으면 restart 버튼을 누르면 되네.
-                          """
-                self.messageEdit.setText(display)
-                self.showInfo()
-                self.startButton.setDisabled(True)  # 게임이 끝났으므로 start game 버튼 비활성화
+            # 프린트할 메세지 리스트
+            display = [f"흠, 자네는 {selectedBeads}개를 쥐고있었구만.\n내가 방금 뭐라 그랬더라..?",
+                       f"아, 나는 {chosenEvenOdd}라 했네!\n이런! 참가번호 {Main.playerNum}번 {Main.name}, 자네가 수비에 성공했구만. \n여기 {selectedBeads * 2}개의 구슬을 주지.",
+                       f"이런, 내 구슬을 다 잃었구만..!\n괜찮네. 다 가져, 자네꺼야. 우린 깐부잖아.\n게임을 더 하고 싶으면 restart 버튼을 누르면 되네.", ]
 
+            # player1이 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 승리)
+            if self.guess_Ob.finished(self.player1.getNumOfBeads()):
+                self.printMessage(display) # 메세지 프린트 함수
+                self.startButton.setDisabled(True)  # 게임이 끝났으므로 start game 버튼 비활성화
             else:  # 계속 게임 진행
-                display = f"""흠, 자네는 {selectedBeads}개를 쥐고있었구만.\n내가 방금 뭐라 그랬더라..?\n아, 나는 {chosenEvenOdd}라 했네!\n이런! 참가번호 {Main.playerNum}번 {Main.name}, 자네가 수비에 성공했구만.\n여기 {selectedBeads * 2}개의 구슬을 주지.
-                          """
-                self.messageEdit.setText(display)
-                # 결과 출력
-                self.showInfo()
+                self.printMessage(display[:2]) # 메세지 프린트 함수
                 self.gameRound += 1
-                # self.round_Edit.setText(str(self.gameRound))
                 self.messageEdit.append("\n다음 라운드로 가보자고!\nGame Start 버튼을 누르게.")
 
         else:  # False라면 = 사용자가 졌다면
@@ -434,22 +429,16 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
                 selectedBeads = self.player2.getNumOfBeads()
             self.player1.addBeads(selectedBeads)  # player1 구슬 개수 증가
             self.player2.subBeads(selectedBeads)  # player2 구슬 개수 감소
-            if self.guess_Ob.finished(
-                    self.player2.getNumOfBeads()):  # player2가 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 패배)
-                display = f"""흠, 자네는 {selectedBeads}개를 쥐고있었구만.\n내가 방금 뭐라 그랬더라..?\n아, 나는 {chosenEvenOdd}라 했네!\n허허! 참가번호 {Main.playerNum}번 {Main.name}, 자네가 졌구만!\n어서 {selectedBeads}개의 구슬을 나에게 주게.\n\n아니, 설마 자네 구슬을 다 잃은겐가?\n너무 그렇게 보지 말게나. 우린 깐부잖아~\n게임을 더 하고 싶으면 restart 버튼을 누르면 되네.
-                          """
-                self.messageEdit.setText(display)
-                self.showInfo()
+            # 프린트할 메세지 리스트
+            display = [f"흠, 자네는 {selectedBeads}개를 쥐고있었구만.\n내가 방금 뭐라 그랬더라..?"
+                       f"\n아, 나는 {chosenEvenOdd}라 했네!\n허허! 참가번호 {Main.playerNum}번 {Main.name}, 자네가 졌구만!\n어서 {selectedBeads}개의 구슬을 나에게 주게.",
+                       "아니, 설마 자네 구슬을 다 잃은겐가?\n너무 그렇게 보지 말게나. 우린 깐부잖아~\n게임을 더 하고 싶으면 restart 버튼을 누르면 되네.", ]
+            if self.guess_Ob.finished(self.player2.getNumOfBeads()):  # player2가 가지고 있는 구슬이 없을 경우 -> 게임 끝(player2의 패배)
+                self.printMessage(display)
                 self.startButton.setDisabled(True)  # 게임이 끝났으므로 start game 버튼 비활성화
-
             else:  # 계속 게임 진행
-                display = f"""흠, 자네는 {selectedBeads}개를 쥐고있었구만.\n내가 방금 뭐라 그랬더라..?\n아, 나는 {chosenEvenOdd}라 했네!\n허허! 참가번호 {Main.playerNum}번 {Main.name}, 자네가 졌구만!\n어서 {selectedBeads}개의 구슬을 나에게 주게.
-                          """
-                self.messageEdit.setText(display)
-                # 결과 출력
-                self.showInfo()
+                self.printMessage(display[:2])
                 self.gameRound += 1
-                # self.round_Edit.setText(str(self.gameRound))
                 self.messageEdit.append("\n다음 판을 할 준비가 됐나?\n됐다면 Game Start 버튼을 누르게.")
         self.disableSetting()  # 홀/짝/enter 버튼, 구슬 line edit 비활성화
 
@@ -472,8 +461,25 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
             self.enterEventButton.setDisabled(False)  # enter 버튼 활성화
         self.messageEdit.append(display)
 
-    def restartBeadGame(self):
-        pass
+    def restartButtonClicked(self):
+        # 객체 및 변수 설정
+        self.player1 = Player1(Main.beadNum)
+        self.player2 = Player2(Main.beadNum, Main.name, Main.playerNum)
+        self.guess_Ob = Guess()
+        self.gameRound = 1
+        self.showInfo()
+
+        #재시작을 알리는 문구 출력
+        display = "다시 시작해보자고!"
+        self.messageEdit.setText(display)
+
+        # 문구를 볼 수 있도록 2초 대기
+        loop = QEventLoop()
+        QTimer.singleShot(2000, loop.quit)
+        loop.exec_()
+
+        # 재시작
+        self.startBeadGame()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
