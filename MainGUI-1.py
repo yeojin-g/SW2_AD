@@ -15,6 +15,13 @@ def musicApply(music):
     pygame.mixer.music.play(-1)
 
 
+class Button(QPushButton):
+    def __init__(self, text, callback):
+        super().__init__()
+        self.setText(text)
+        self.clicked.connect(callback)
+
+
 # 두 개의 창이 공유하는 변수를 저장하는 상위클래스
 class Main:
     name = None
@@ -82,8 +89,8 @@ class SqGame(QWidget, Main):
         self.ErrorEdit.setReadOnly(True)
         self.ErrorEdit.setStyleSheet("color: rgb(233, 075, 134);")  # '오징어게임' 타이틀과 색상이 같게
 
-        # 버튼
-        self.nextButton = QPushButton('Next Page!')
+        # 버튼 생성, 함수 연결
+        self.nextButton = Button('Next Page!', self.settingInfo)
 
         # 가로 1열 - 타이틀
         hbox1 = QHBoxLayout()
@@ -104,8 +111,8 @@ class SqGame(QWidget, Main):
         # 가로 3열 - 구슬 개수
         hbox3 = QHBoxLayout()
         hbox3.addStretch(1)
-        hbox3.addWidget(pickBeadNum)
         hbox3.addWidget(self.pickBeadNumEdit)
+        hbox3.addWidget(pickBeadNum)
         hbox3.addStretch(1)
 
         # 가로 4열 - 게임룰 타이틀
@@ -130,9 +137,6 @@ class SqGame(QWidget, Main):
             else:
                 vbox.addLayout(vboxL[i])
             vbox.addStretch(1)
-
-        # 버튼 연결
-        self.nextButton.clicked.connect(self.settingInfo)
 
         # 윈도우 위치 및 타이틀, 메인 레이아웃 설정
         self.setLayout(vbox)
@@ -231,13 +235,13 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.remainBead2Edit = QTextEdit()
         self.remainBead2Edit.setReadOnly(True)
 
-        # 버튼
-        self.backButton = QPushButton('Back')
-        self.oddNumButton = QPushButton('홀')
-        self.evenNumButton = QPushButton('짝')
-        self.enterEventButton = QPushButton('Enter')
-        self.startButton = QPushButton('Game Start')
-        self.restartButton = QPushButton('Restart')
+        # 버튼 생성, 함수 연결
+        self.backButton = Button('Back', self.BackButtonClicked)
+        self.startButton = Button('Game Start', self.startButtonClicked)
+        self.oddNumButton = Button('홀', self.oddOrEvenButtonClicked)
+        self.evenNumButton = Button('짝', self.oddOrEvenButtonClicked)
+        self.enterEventButton = Button('Enter', self.enterEventButtonClicked)
+        self.restartButton = Button('Restart', self.restartButtonClicked)
 
         # 라운드 알림 배치
         hboxR = QHBoxLayout()
@@ -287,14 +291,6 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         grid.addLayout(grid2_1, 7, 0)
         grid.addLayout(grid2_2, 7, 1)
         grid.addWidget(self.backButton, 10, 0, 1, 2)
-
-        # 버튼 연결
-        self.backButton.clicked.connect(self.BackButtonClicked)
-        self.startButton.clicked.connect(self.startButtonClicked)
-        self.oddNumButton.clicked.connect(self.oddOrEvenButtonClicked)
-        self.evenNumButton.clicked.connect(self.oddOrEvenButtonClicked)
-        self.enterEventButton.clicked.connect(self.enterEventButtonClicked)
-        self.restartButton.clicked.connect(self.restartButtonClicked)
 
         # 레이아웃, 사이즈, 윈도우 이름 설정
         self.setLayout(grid)
