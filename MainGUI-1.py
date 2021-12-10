@@ -15,6 +15,7 @@ def musicApply(music):
     pygame.mixer.music.play(-1)
 
 
+# 버튼 생성 & 콜백함수 연결하는 클래스
 class Button(QPushButton):
     def __init__(self, text, callback):
         super().__init__()
@@ -92,40 +93,39 @@ class SqGame(QWidget, Main):
         # 버튼 생성, 함수 연결
         self.nextButton = Button('Next Page!', self.settingInfo)
 
+        # 열(hbox)과 위젯 이름(widget)을 받아서 addWidget, addStretch 하는 함수
+        def addWidgetAndStretch(hbox, widget):
+            hbox.addWidget(widget)
+            hbox.addStretch(1)
+
         # 가로 1열 - 타이틀
         hbox1 = QHBoxLayout()
         hbox1.addStretch(1)
-        hbox1.addWidget(title)
-        hbox1.addStretch(1)
+        addWidgetAndStretch(hbox1, title)
 
         # 가로 2열 - 이름, 참가번호
         hbox2 = QHBoxLayout()
         hbox2.addStretch(1)
         hbox2.addWidget(name)
-        hbox2.addWidget(self.nameEdit)
-        hbox2.addStretch(1)
+        addWidgetAndStretch(hbox2, self.nameEdit)
         hbox2.addWidget(ptcNumber)
-        hbox2.addWidget(self.ptcNumberEdit)
-        hbox2.addStretch(1)
+        addWidgetAndStretch(hbox2, self.ptcNumberEdit)
 
         # 가로 3열 - 구슬 개수
         hbox3 = QHBoxLayout()
         hbox3.addStretch(1)
         hbox3.addWidget(self.pickBeadNumEdit)
-        hbox3.addWidget(pickBeadNum)
-        hbox3.addStretch(1)
+        addWidgetAndStretch(hbox3, pickBeadNum)
 
         # 가로 4열 - 게임룰 타이틀
         hbox4 = QHBoxLayout()
         hbox4.addStretch(1)
-        hbox4.addWidget(gameRuleTitle)
-        hbox4.addStretch(1)
+        addWidgetAndStretch(hbox4, gameRuleTitle)
 
         # 가로 5열 - 게임 설명문
         hbox5 = QHBoxLayout()
         hbox5.addStretch(1)
-        hbox5.addWidget(gameRule)
-        hbox5.addStretch(1)
+        addWidgetAndStretch(5, gameRule)
 
         # 세로
         vbox = QVBoxLayout()
@@ -378,6 +378,7 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.disableSetting()  # 홀/짝/enter 버튼, 구슬 line edit 비활성화
 
     def guessWhenRoundEven(self):  # 짝수판 / player1(컴퓨터): 공격자, player2(사용자): 수비자
+        # 예외처리
         if not self.choiceNumEdit.text().isdecimal():  # 숫자를 입력하지 않았을 때
             self.messageEdit.setText("어허, 올바른 값을 입력하게나~")
             self.choiceNumEdit.clear()
