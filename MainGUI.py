@@ -454,9 +454,10 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.player2 = Player2(Main.beadNum, Main.name, Main.playerNum)
         self.guess_Ob = Guess()
         self.gameRound = 1
-        self.showInfo()
+        self.showInfo()  # 구슬의 개수 정보를 보여줌
         self.startButton.setDisabled(False)  # 재시작했으므로 Game start버튼 활성화
-        
+        self.disableSetting()  # 처음에 버튼을 비활성화, lineEdit read only로 만드는 함수
+
         # 재시작을 알리는 문구 출력
         display = "다시 시작해보자고!"
         self.messageEdit.setText(display)
