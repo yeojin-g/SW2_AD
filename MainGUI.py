@@ -455,7 +455,8 @@ class SecGame(QDialog, QWidget, Main):  # 게임창, 2번째 창
         self.guess_Ob = Guess()
         self.gameRound = 1
         self.showInfo()
-
+        self.startButton.setDisabled(False)  # 재시작했으므로 Game start버튼 활성화
+        
         # 재시작을 알리는 문구 출력
         display = "다시 시작해보자고!"
         self.messageEdit.setText(display)
