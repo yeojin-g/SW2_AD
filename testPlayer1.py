@@ -47,6 +47,9 @@ class TestGuess(unittest.TestCase):
         self.assertEqual(self.p1.messageOutput(), p1note)
         self.assertEqual(self.p2.messageOutput(), p2note)
 
+    def testResult(self):
+        self.assertEqual(self.p1.result("Yeojin"), "")
+
 
 if __name__ == '__main__':
     unittest.main()
